@@ -1,0 +1,226 @@
+include ./config.d/*
+# This file only has direct bindings
+
+# Set modifiers
+########################################
+set $mod Mod1
+set $alt Mod4
+floating_modifier $mod
+
+bindsym Mod1+9 exit
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+r reload
+
+# Application bindings
+########################################
+set $terminal kitty
+bindsym $mod+Return exec $terminal
+bindsym $mod+d exec fuzzel
+
+bindsym $mod+o mode "open"
+mode "open" {
+        bindsym c exec firefox; mode "default"
+        bindsym e exec emacsclient -nca ""; mode "default"
+        bindsym n exec neovide; mode "default"
+        bindsym x exec xournalpp; mode "default"
+        bindsym Shift+x exec file="$(fd -e xopp | fzfmenu)" && xournal $file; mode "default"
+        bindsym Ctrl+x exec file="$(fd -e pdf | fzfmenu)" && xournal $file; mode "default"
+
+        bindsym h exec ~/.config/sway/scripts/history.sh open-and-update; mode "default"
+        bindsym z exec file="$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)" && zathura $file; mode "default"
+        bindsym b exec alacritty -e "bluetuith"; mode "default"
+        bindsym d exec exec discord; mode "default"
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Tiling
+########################################
+set $left h
+set $right l
+set $down j
+set $up k
+
+bindsym $mod+a focus parent
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+focus_wrapping no
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# Split orientation
+bindsym $mod+g split h;exec notify-send 'tile horizontally'
+bindsym $mod+v split v;exec notify-send 'tile vertically'
+
+# Change layout 
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+
+# Floating
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+# Scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Kill Waybar
+bindsym $mod+m exec --no-startup-id pkill -SIGUSR1 '^waybar$'
+
+# Workspaces
+########################################
+
+set $ws1 1 
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+
+# Toggle monitors
+set $move_to_alternate ~/.config/sway/scripts/alternate.sh move
+set $toggle_workspace ~/.config/sway/scripts/alternate.sh focus
+
+bindsym $mod+Tab exec $toggle_workspace
+bindsym $mod+u exec $move_to_alternate && $toggle_workspace
+
+# Switch workspace group (only if moving from one to another)
+bindsym $alt+1 exec swaysome focus-group 1
+bindsym $alt+2 exec swaysome focus-group 2
+
+bindsym $alt+Shift+1 exec swaysome move-to-group 1
+bindsym $alt+Shift+2 exec swaysome move-to-group 2
+
+# Switch to workspace
+bindsym $mod+1 exec swaysome focus 1
+bindsym $mod+2 exec swaysome focus 2
+bindsym $mod+3 exec swaysome focus 3
+bindsym $mod+4 exec swaysome focus 4
+bindsym $mod+5 exec swaysome focus 5
+bindsym $mod+6 exec swaysome focus 6
+bindsym $mod+7 exec swaysome focus 7
+bindsym $mod+8 exec swaysome focus 8
+
+# Move focused container to workspace
+bindsym $mod+Ctrl+1 exec $toggle_workspace && swaysome focus $ws1 && $toggle_workspace
+bindsym $mod+Ctrl+2 exec $toggle_workspace && swaysome focus $ws2 && $toggle_workspace
+bindsym $mod+Ctrl+3 exec $toggle_workspace && swaysome focus $ws3 && $toggle_workspace
+bindsym $mod+Ctrl+4 exec $toggle_workspace && swaysome focus $ws4 && $toggle_workspace
+bindsym $mod+Ctrl+5 exec $toggle_workspace && swaysome focus $ws5 && $toggle_workspace
+bindsym $mod+Ctrl+6 exec $toggle_workspace && swaysome focus $ws6 && $toggle_workspace
+bindsym $mod+Ctrl+7 exec $toggle_workspace && swaysome focus $ws7 && $toggle_workspace
+bindsym $mod+Ctrl+8 exec $toggle_workspace && swaysome focus $ws8 && $toggle_workspace
+
+# Move to workspace with focused container
+bindsym $mod+Shift+1 exec swaysome move $ws1; exec swaysome focus $ws1
+bindsym $mod+Shift+2 exec swaysome move $ws2; exec swaysome focus $ws2
+bindsym $mod+Shift+3 exec swaysome move $ws3; exec swaysome focus $ws3
+bindsym $mod+Shift+4 exec swaysome move $ws4; exec swaysome focus $ws4
+bindsym $mod+Shift+5 exec swaysome move $ws5; exec swaysome focus $ws5
+bindsym $mod+Shift+6 exec swaysome move $ws6; exec swaysome focus $ws6
+bindsym $mod+Shift+7 exec swaysome move $ws7; exec swaysome focus $ws7
+bindsym $mod+Shift+8 exec swaysome move $ws8; exec swaysome focus $ws8
+
+# Screenshot
+########################################
+set $print p
+bindsym $mod+$print exec grim -g "$(slurp -b 0x333333)" - | wl-copy && notify-send "screenshot copied to clipboard"
+bindsym $mod+Ctrl+$print exec grim -g "$(slurp -b 0x333333)" - | swappy -f -
+bindsym $mod+Shift+$print exec grim -g "$(slurp -b 0x333333)" - | swappy -f -
+bindsym Print exec grim - | wl-copy && notify-send "fullscreen screenshot copied to clipboard"
+
+# Lock
+########################################
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+bindsym $mod+0 mode "$mode_system"
+mode "$mode_system" {
+    bindsym l exec --no-startup-id $lock, mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym u exec --no-startup-id dm-tool switch-to-greeter, mode "default"
+    bindsym e exec --no-startup-id swaymsg exit, mode "default"
+    bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Resize 
+########################################
+bindsym $mod+r mode "resize"
+mode "resize" {
+        bindsym $left resize shrink width 5 px or 5 ppt
+        bindsym $up resize grow height 5 px or 5 ppt
+        bindsym $down resize shrink height 5 px or 5 ppt
+        bindsym $right resize grow width 5 px or 5 ppt
+
+        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Fzf Mode
+bindsym $mod+Shift+f mode "fzf"
+mode "fzf" {
+        bindsym y exec fd . | fzfmenu | wl-copy; mode "default"
+        bindsym p exec fd . | fzfmenu | wl-paste; mode "default"
+
+        # exit fzf mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Media
+########################################
+bindsym XF86MonBrightnessUp exec ~/.config/sway/scripts/brightness.sh inc 10
+bindsym XF86MonBrightnessDown exec ~/.config/sway/scripts/brightness.sh dec 10
+
+bindsym Shift+XF86MonBrightnessUp exec ~/.config/sway/scripts/brightness.sh inc 2
+bindsym Shift+XF86MonBrightnessDown exec ~/.config/sway/scripts/brightness.sh dec 2
+
+bindsym XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 10
+bindsym XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 10
+
+bindsym XF86AudioMute exec amixer -D pulse set Master toggle
+
+bindsym Shift+XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 2
+bindsym Shift+XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 2
+
+# Notification
+########################################
+bindsym $mod+equal mode "notifications"
+mode "notifications" {
+        bindsym d exec makoctl dismiss -a; mode "default"
+        bindsym g exec makoctl dismiss -g
+        bindsym n exec makoctl dismiss
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Monitor Hacking
+########################################
+
+bindsym $mod+y mode "monitors"
+mode "monitors" {
+        bindsym d exec wdisplays; mode "default332"
+        bindsym t exec ~/.config/sway/scripts/map_active.sh; mode "default"
+        bindsym s exec ~/.config/sway/scripts/monitor-layout.sh save; mode "default"
+        bindsym a exec ~/.config/sway/scripts/monitor-layout.sh apply; mode "default"
+        
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}

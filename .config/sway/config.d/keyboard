@@ -1,0 +1,13 @@
+# Input Stuff
+input "type:keyboard" {
+    xkb_layout gb
+    xkb_variant colemak_dh
+    xkb_options ctrl:swapcaps
+}
+
+input type:touchpad {
+    tap enabled
+    natural_scroll disabled
+    scroll_factor 2
+    drag enabled
+}
