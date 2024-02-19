@@ -17,9 +17,11 @@ alias gs="git status"
 alias v="nvim"
 alias ts="tmux source ~/.config/tmux/tmux.conf"
 alias tk="tmux kill-server"
+alias zs="source ~/.zshrc"
+alias n="nvim"
 
+alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."
-
 alias key="setxkbmap gb -variant colemak_dh -option ctrl:swapcaps"
 
 new() {
@@ -33,10 +35,6 @@ z() {
     else
 	gobble zathura "$(fd -e pdf | fzf --scheme path)" && exit
     fi
-}
-
-n() {
-    $EDITOR $(browse .)
 }
 
 nh() {
@@ -62,10 +60,6 @@ p() {
 
 mdh() {
     mv $(ls ~/Downloads/*(.) | fzf) ./
-}
-
-gc() {
-    git commit -m $1
 }
 
 update() {
