@@ -16,10 +16,10 @@ bindsym $mod+Shift+r reload
 set $terminal kitty
 bindsym $mod+Return exec $terminal
 bindsym $mod+d exec fuzzel
+bindsym $mod+c exec firefox
 
 bindsym $mod+o mode "open"
 mode "open" {
-        bindsym c exec firefox; mode "default"
         bindsym e exec emacsclient -nca ""; mode "default"
         bindsym n exec neovide; mode "default"
         bindsym x exec xournalpp; mode "default"
@@ -29,6 +29,7 @@ mode "open" {
         bindsym h exec ~/.config/sway/scripts/history.sh open-and-update; mode "default"
         bindsym z exec file="$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)" && zathura $file; mode "default"
         bindsym b exec alacritty -e "bluetuith"; mode "default"
+        bindsym a exec pavucontrol; mode "default"
         bindsym d exec exec discord; mode "default"
 
         bindsym Return mode "default"

@@ -8,7 +8,11 @@ dirs() {
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$({ echo ~/dotfiles & dirs 1 ~/repos ~/.config & dirs 2 ~/Documents } | fzf)
+    selected=$({
+        echo ~/dotfiles & \
+        dirs 1 ~/repos ~/.config & \
+        dirs 2 ~/Documents
+    } | fzf)
 fi
 
 if [[ -z $selected ]]; then
