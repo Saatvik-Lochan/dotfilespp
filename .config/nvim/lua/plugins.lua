@@ -279,4 +279,8 @@ end
 -- [[ Configure Bqf ]]
 require("bqf")
 
+-- [[ Configure Incsearch ]]
+-- vim.keymap.set('n', '/', '<Plug>(incsearch-forward)')
+-- vim.keymap.set('n', '?', '<Plug>(incsearch-backward)')
+-- vim.keymap.set('n', 'g', '<Plug>(incsearch-stay)')
 

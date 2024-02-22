@@ -28,6 +28,8 @@ require('lazy').setup({
     end,
   },
 
+  'haya14busa/incsearch.vim',
+
   'vimpostor/vim-tpipeline',
 
   'kevinhwang91/nvim-bqf',

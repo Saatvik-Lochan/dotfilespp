@@ -1,12 +1,13 @@
 -- Set highlight on search
 --
 vim.o.hlsearch = false
+vim.o.incsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
 
--- Enable mouse mode
-vim.o.mouse = 'a'
+-- To be an ass to eveyrone using my laptop :)
+vim.o.mouse = ''
 
 vim.o.scrolloff = 7
 
@@ -56,3 +57,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
+-- [[ Very magic mode shit ]]
+vim.keymap.set({ 'c' }, '<C-v>', '%s/\\v', { noremap = true })

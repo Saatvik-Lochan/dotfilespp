@@ -22,6 +22,8 @@ bindsym $mod+o mode "open"
 mode "open" {
         bindsym e exec emacsclient -nca ""; mode "default"
         bindsym n exec neovide; mode "default"
+
+        bindsym l exec libreoffice "$(fd -e odt -e docx | fzfmenu)"; mode "default"
         bindsym x exec xournalpp; mode "default"
         bindsym Shift+x exec file="$(fd -e xopp | fzfmenu)" && xournal $file; mode "default"
         bindsym Ctrl+x exec file="$(fd -e pdf | fzfmenu)" && xournal $file; mode "default"
@@ -29,7 +31,7 @@ mode "open" {
         bindsym h exec ~/.config/sway/scripts/history.sh open-and-update; mode "default"
         bindsym z exec file="$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)" && zathura $file; mode "default"
         bindsym b exec alacritty -e "bluetuith"; mode "default"
-        bindsym a exec pavucontrol; mode "default"
+        bindsym a exec pavucontrol
         bindsym d exec exec discord; mode "default"
 
         bindsym Return mode "default"
