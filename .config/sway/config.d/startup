@@ -4,13 +4,13 @@ exec nm-applet
 exec xfce4-power-manager
 
 exec swayidle -w \
-	before-sleep "swaylock --screenshots --clock --effect-blur 7x5"
+	before-sleep $(bat ~/.config/sway/scripts/lock.sh)
 
 exec mako --default-timeout=5000
 
 exec mkfifo /tmp/wobpipe
 exec tail -f /tmp/wobpipe | wob
 
-exec swaysome init 2 && swaysome focus 1 
+exec swaysome init 1
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway

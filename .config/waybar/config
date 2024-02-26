@@ -1,6 +1,6 @@
 {
 	"layer": "top",
-	"position": "top",
+	"position": "top", // top | bottom
 
 	"modules-left": [
 		"sway/mode",
@@ -40,7 +40,7 @@
 		},
 		"format-time": " {H}:{M:02}",
 		"format": "{icon} {capacity}%{time}",
-		"format-charging": " {capacity}%{time}",
+		"format-charging": "🗲 {capacity}%{time}",
 		"format-full": "{icon} {capacity}%",
 		"format-icons": [
 			"",
@@ -136,12 +136,12 @@
 
 	"pulseaudio": {
 		"format": "{icon} {volume}%",
-		"format-bluetooth": "{icon} {volume}%",
+		"format-bluetooth": "{icon}  {volume}%",
 		"format-muted": "",
 		"format-icons": {
 			"headphone": "",
-			"hands-free": "",
-			"headset": "",
+			"hands-free": "🖑",
+			"headset": "",
 			"phone": "",
 			"portable": "",
 			"car": "",

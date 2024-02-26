@@ -5,11 +5,17 @@ dirs() {
     fd . "$@" --exact-depth $depth --type d -L
 }
 
+singles() {
+    echo ~/dotfiles
+    echo ~/repos
+    echo ~
+}
+
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
     selected=$({
-        echo ~/dotfiles & \
+        singles & \
         dirs 1 ~/repos ~/.config & \
         dirs 2 ~/Documents
     } | fzf)
