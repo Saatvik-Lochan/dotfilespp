@@ -7,7 +7,7 @@ vim.o.incsearch = true
 vim.wo.number = true
 
 -- To be an ass to eveyrone using my laptop :)
-vim.o.mouse = 'a'
+vim.o.mouse = ''
 
 vim.o.scrolloff = 7
 

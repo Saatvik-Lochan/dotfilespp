@@ -14,3 +14,6 @@ exec tail -f /tmp/wobpipe | wob
 exec swaysome init 1
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+# for the screen warming thing
+exec wlsunset

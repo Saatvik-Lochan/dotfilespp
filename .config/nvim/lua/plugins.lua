@@ -212,9 +212,6 @@ require('highlight-undo').setup()
 -- [[ Configure Local Highligh]]
 require('local-highlight').setup()
 
--- [[ Configure No Neck Pain ]]
-require('no-neck-pain').setup()
-
 -- [[ Configure Projects ]]
 require('project_nvim').setup({
 	patterns = {
@@ -284,3 +281,5 @@ require("bqf")
 -- vim.keymap.set('n', '?', '<Plug>(incsearch-backward)')
 -- vim.keymap.set('n', 'g', '<Plug>(incsearch-stay)')
 
+-- [[ Configure Biscuits ]]
+-- require('nvim-biscuits').setup({})

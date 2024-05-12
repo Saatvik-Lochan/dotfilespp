@@ -26,6 +26,8 @@ alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."
 alias key="setxkbmap gb -variant colemak_dh -option ctrl:swapcaps"
 
+alias mp="swayhide mpv"
+
 new() {
     echo -n "cd " > ~/.pd && pwd >> ~/.pd && kitty --detach --session ~/.pd
 }

@@ -74,7 +74,16 @@ require('lazy').setup({
 
   'tzachar/highlight-undo.nvim',
 
-  { "shortcuts/no-neck-pain.nvim", version = "*" },
+  {
+      "iamcco/markdown-preview.nvim",
+      cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+      ft = { "markdown" },
+      build = function() vim.fn["mkdp#util#install"]() end,
+  },
+   
+  -- {'code-biscuits/nvim-biscuits',
+  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
+  -- },
 
   {'kevinhwang91/nvim-ufo',
     dependencies = { "kevinhwang91/promise-async" },

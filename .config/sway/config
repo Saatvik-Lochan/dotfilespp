@@ -30,9 +30,19 @@ mode "open" {
 
         bindsym h exec ~/.config/sway/scripts/history.sh open-and-update; mode "default"
         bindsym z exec zathura "$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)"; mode "default"
-        bindsym b exec alacritty -e "bluetuith"; mode "default"
+        bindsym b exec blueman-manager; mode "default"
         bindsym a exec pavucontrol; mode "default"
         bindsym d exec exec discord; mode "default"
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Utilities
+########################################
+bindsym $mod+semicolon mode "utilities"
+mode "utilities" {
+        bindsym s exec ~/.config/sway/scripts/solutions.sh; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -141,10 +151,26 @@ bindsym $mod+Shift+8 exec swaysome move $ws8; exec swaysome focus $ws8
 # Screenshot
 ########################################
 set $print p
-bindsym $mod+$print exec grim -g "$(slurp -b 0x333333)" - | wl-copy && notify-send "screenshot copied to clipboard"
-bindsym $mod+Ctrl+$print exec grim -g "$(slurp -b 0x333333)" - | satty -f - --copy-command wl-copy --early-exit
-bindsym $mod+Shift+$print exec grim -g "$(slurp -b 0x333333)" - | swappy -f 
-bindsym Print exec grim - | wl-copy && notify-send "fullscreen screenshot copied to clipboard"
+set $edit-command satty --copy-command wl-copy --early-exit -f -
+set $ss ~/.config/sway/scripts/screenshot.sh
+
+bindsym $mod+$print exec $ss select copy && notify-send "screenshot copied to clipboard"
+bindsym $mod+Ctrl+$print exec $ss select edit && notify-send "screenshot copied to clipboard"
+
+bindsym Print mode "screenshot (w)indow (m)onitor (e)verything - capitals for editing"
+mode "screenshot (w)indow (m)onitor (e)verything - capitals for editing" {
+    bindsym m exec $ss monitor copy && notify-send "monitor screenshot copied", mode "default"
+    bindsym w exec $ss window copy && notify-send "window screenshot copied", mode "default"
+    bindsym e exec $ss everything copy && notify-send "everything screenshot copied", mode "default"
+
+    bindsym Shift+m exec $ss monitor edit && notify-send "monitor screenshot copied", mode "default"
+    bindsym Shift+w exec $ss window edit && notify-send "window screenshot copied", mode "default"
+    bindsym Shift+e exec $ss everything edit && notify-send "everything screenshot copied", mode "default"
+
+    # exit screenshot mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
 
 # Lock
 ########################################
@@ -205,6 +231,11 @@ bindsym XF86AudioMute exec amixer -D pulse set Master toggle
 bindsym Shift+XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 2
 bindsym Shift+XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 2
 
+# Keyboard Brightness
+########################################
+bindsym Next exec ~/.config/sway/scripts/backlight.sh 2 && notify-send "Keyboard backlight on"
+bindsym Prior exec ~/.config/sway/scripts/backlight.sh 0 && notify-send "Keyboard backlight off"
+
 # Notification
 ########################################
 bindsym $mod+equal mode "notifications"
@@ -217,6 +248,7 @@ mode "notifications" {
         bindsym Escape mode "default"
 }
 
+
 # Monitor Hacking
 ########################################
 
@@ -226,6 +258,7 @@ mode "monitors" {
         bindsym t exec ~/.config/sway/scripts/map_active.sh; mode "default"
         bindsym s exec ~/.config/sway/scripts/monitor-layout.sh save; mode "default"
         bindsym a exec ~/.config/sway/scripts/monitor-layout.sh apply; mode "default"
+        bindsym r exec ~/.config/sway/scripts/monitor-refresh-picker.sh; mode "default"
         
         bindsym Return mode "default"
         bindsym Escape mode "default"
