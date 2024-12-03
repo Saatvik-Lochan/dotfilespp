@@ -9,6 +9,7 @@ singles() {
     echo ~/dotfiles
     echo ~/repos
     echo ~
+    echo ~/Documents/studies/part-ii/project/main/qemu/
 }
 
 if [[ $# -eq 1 ]]; then
@@ -17,7 +18,7 @@ else
     selected=$({
         singles & \
         dirs 1 ~/repos ~/.config & \
-        dirs 2 ~/Documents
+        dirs 3 ~/Documents
     } | fzf)
 fi
 

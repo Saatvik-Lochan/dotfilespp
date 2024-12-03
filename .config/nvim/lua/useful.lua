@@ -60,3 +60,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Very magic mode shit ]]
 vim.keymap.set({ 'c' }, '<C-v>', '%s/\\v', { noremap = true })
+
+-- [[ disable errors inline ]]
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = false
+    }
+)

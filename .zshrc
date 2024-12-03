@@ -20,7 +20,9 @@ alias ts="tmux source ~/.config/tmux/tmux.conf"
 alias tk="tmux kill-server"
 alias zs="source ~/.zshrc"
 alias n="nvim"
+alias vim="NVIM_APPNAME=nvim-minimal nvim"
 alias ss="satty --copy-command wl-copy --early-exit"
+alias nin="NVIM_APPNAME=nvim-minimal nvim"
 
 alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."
@@ -104,12 +106,6 @@ bindkey -M vicmd -s 'H' '^'
 
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
-
-# Set up atuin
-eval "$(atuin init zsh)"
-bindkey -M vicmd '^R' atuin-search
-bindkey "^P" atuin-up-search
-bindkey "^N" atuin-down-search
 
 # # start tmux on startup
 [[ -z "$TMUX"  ]] && { exec tmux new -A -s "MAIN" }

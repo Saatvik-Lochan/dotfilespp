@@ -96,9 +96,6 @@ vim.keymap.set({ 'n', 't', 'v' }, '<Leader>k', '<cmd>AerialToggle<cr>', { desc =
 vim.keymap.set({ 'n', 't', 'v' }, 's', function() require('hop').hint_words({ x_bias = 90 }) end,
 	{ desc = '[S]lide to correct word on line' })
 
--- [[ Configure CamelCaseMotion ]]
-vim.o.camelcasemotion_key = 'i'
-
 -- [[ Configure Harpoon ]]
 vim.keymap.set('n', '<leader>a', require('harpoon.mark').add_file, { desc = '[A]dd mark to file' })
 vim.keymap.set('n', '<leader>qf', require('harpoon.ui').toggle_quick_menu, { desc = 'Toggle [Q]uick [F]iles' })
@@ -276,6 +273,9 @@ end
 -- [[ Configure Bqf ]]
 require("bqf")
 
+-- [[ Configure Colorizer ]]
+-- require('colorizer').setup()
+
 -- [[ Configure Incsearch ]]
 -- vim.keymap.set('n', '/', '<Plug>(incsearch-forward)')
 -- vim.keymap.set('n', '?', '<Plug>(incsearch-backward)')
@@ -283,3 +283,4 @@ require("bqf")
 
 -- [[ Configure Biscuits ]]
 -- require('nvim-biscuits').setup({})
+--

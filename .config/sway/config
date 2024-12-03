@@ -14,9 +14,13 @@ bindsym $mod+Shift+r reload
 # Application bindings
 ########################################
 set $terminal kitty
+set $browser "firefox"
+set $browser-alternative "firefox --profile /home/saatvikl/.mozilla/firefox/2vmq0iuu.cam"
+
 bindsym $mod+Return exec $terminal
 bindsym $mod+d exec fuzzel
-bindsym $mod+c exec firefox
+bindsym $mod+c exec $browser
+bindsym $mod+Ctrl+c exec $browser-alternative
 
 bindsym $mod+o mode "open"
 mode "open" {
@@ -32,7 +36,8 @@ mode "open" {
         bindsym z exec zathura "$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)"; mode "default"
         bindsym b exec blueman-manager; mode "default"
         bindsym a exec pavucontrol; mode "default"
-        bindsym d exec exec discord; mode "default"
+        bindsym d exec discord; mode "default"
+        bindsym s exec spotify; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -42,7 +47,11 @@ mode "open" {
 ########################################
 bindsym $mod+semicolon mode "utilities"
 mode "utilities" {
+	# Switch between exam papers and markschemes
         bindsym s exec ~/.config/sway/scripts/solutions.sh; mode "default"
+
+	# Switch timezones
+	bindsym t exec timedatectl set-timezone "$(timedatectl list-timezones | fzfmenu)"; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -104,6 +113,21 @@ set $ws8 8
 # Toggle monitors
 set $move_to_alternate ~/.config/sway/scripts/alternate.sh move
 set $toggle_workspace ~/.config/sway/scripts/alternate.sh focus
+
+# Touchpad Gestures
+bindgesture swipe:4:right workspace next
+bindgesture swipe:4:left workspace prev
+bindgesture swipe:4:down kill
+
+bindgesture swipe:3:up focus up
+bindgesture swipe:3:down focus down
+bindgesture swipe:3:right focus right
+bindgesture swipe:3:left focus left
+
+# bindgesture swipe:5:up move up
+# bindgesture swipe:5:down move down
+# bindgesture swipe:5:left move left
+# bindgesture swipe:5:right move right
 
 bindsym $mod+Tab exec $toggle_workspace
 bindsym $mod+u exec $move_to_alternate && $toggle_workspace
@@ -220,16 +244,21 @@ mode "fzf" {
 bindsym XF86MonBrightnessUp exec ~/.config/sway/scripts/brightness.sh inc 10
 bindsym XF86MonBrightnessDown exec ~/.config/sway/scripts/brightness.sh dec 10
 
-bindsym Shift+XF86MonBrightnessUp exec ~/.config/sway/scripts/brightness.sh inc 2
-bindsym Shift+XF86MonBrightnessDown exec ~/.config/sway/scripts/brightness.sh dec 2
+bindsym Shift+XF86MonBrightnessUp exec ~/.config/sway/scripts/brightness.sh inc 1
+bindsym Shift+XF86MonBrightnessDown exec ~/.config/sway/scripts/brightness.sh dec 1
 
-bindsym XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 10
-bindsym XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 10
+bindsym XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 5
+bindsym XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 5
 
 bindsym XF86AudioMute exec amixer -D pulse set Master toggle
 
-bindsym Shift+XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 2
-bindsym Shift+XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 2
+bindsym Shift+XF86AudioRaiseVolume exec ~/.config/sway/scripts/volume.sh inc 1
+bindsym Shift+XF86AudioLowerVolume exec ~/.config/sway/scripts/volume.sh dec 1
+
+# Playback Controls
+bindsym Cancel exec playerctl --player playerctld next;
+bindsym XF86Go exec playerctl --player playerctld previous;
+bindsym XF86Messenger exec playerctl --player playerctld play-pause;
 
 # Keyboard Brightness
 ########################################

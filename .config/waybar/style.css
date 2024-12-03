@@ -29,22 +29,45 @@
 @define-color white	#ebdbb2;
 @define-color bg2	#504945;
 
+/* Old colours: */
+/* @define-color warning 	@bryellow; */
+/* @define-color critical	@red; */
+/* @define-color mode	@black; */
+/* @define-color unfocused	@bg2; */
+/* @define-color focused	@braqua; */
+/* @define-color inactive	@purple; */
+/* @define-color sound	@brpurple; */
+/* @define-color network	@purple; */
+/* @define-color memory	@braqua; */
+/* @define-color cpu	@green; */
+/* @define-color temp	@brgreen; */
+/* @define-color layout	@bryellow; */
+/* @define-color battery	@aqua; */
+/* @define-color tray	@black; */
+/* @define-color time	@white; */
+
+@define-color bright @blue;
+@define-color dark @bg2;
+@define-color textcolour @white;
+
+@define-color inactive	@gray;
+@define-color unfocused	@dark;
+@define-color focused	@bright;
 
 @define-color warning 	@bryellow;
-@define-color critical	@red;
-@define-color mode	@black;
-@define-color unfocused	@bg2;
-@define-color focused	@braqua;
-@define-color inactive	@purple;
-@define-color sound	@brpurple;
-@define-color network	@purple;
-@define-color memory	@braqua;
-@define-color cpu	@green;
-@define-color temp	@brgreen;
-@define-color layout	@bryellow;
-@define-color battery	@aqua;
-@define-color tray	@black;
-@define-color time	@white;
+@define-color critical	@yellow;
+
+@define-color mode	@bright;
+
+@define-color sound	@bright;
+@define-color network	@dark;
+@define-color memory	@bright;
+@define-color cpu	@dark;
+@define-color temp	@bright;
+@define-color battery	@dark;
+@define-color layout	@bright;
+@define-color tray	@dark;
+@define-color time	@bright;
 
 /* Reset all styles */
 * {
@@ -134,13 +157,13 @@
 
 /* Active (on focused output) */
 #workspaces button.focused {
-	color: @black;
+	color: @white;
 	background: @focused;
 }
 
 /* Contains an urgent window */
 #workspaces button.urgent {
-	color: @black;
+	color: @white;
 	background: @warning;
 }
 
@@ -156,37 +179,37 @@
 
 #pulseaudio {
 	background: @sound;
-	color: @black;
+	color: @textcolour;
 }
 
 #network {
 	background: @network;
-	color: @black;
+	color: @textcolour;
 }
 
 #memory {
 	background: @memory;
-	color: @black;
+	color: @textcolour;
 }
 
 #cpu {
 	background: @cpu;
-	color: @black;
+	color: @textcolour;
 }
 
 #temperature {
 	background: @temp;
-	color: @black;
+	color: @textcolour;
 }
 
 #language {
 	background: @layout;
-	color: @black;
+	color: @textcolour;
 }
 
 #battery {
 	background: @battery;
-	color: @black;
+	color: @textcolour;
 }
 
 #tray {
@@ -195,7 +218,7 @@
 
 #clock.time {
 	background: @time;
-	color: @black;
+	color: @textcolour;
 }
 
 #custom-arrow1 {

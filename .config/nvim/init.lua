@@ -68,11 +68,11 @@ require('lazy').setup({
 
   'itchyny/vim-qfedit',
 
-  'wincent/scalpel',
-
   'tzachar/local-highlight.nvim',
 
   'tzachar/highlight-undo.nvim',
+
+  'norcalli/nvim-colorizer.lua',
 
   {
       "iamcco/markdown-preview.nvim",
