@@ -33,7 +33,7 @@ mode "open" {
         bindsym Ctrl+x exec file="$(fd -e pdf | fzfmenu)" && xournal $file; mode "default"
 
         bindsym h exec ~/.config/sway/scripts/history.sh open-and-update; mode "default"
-        bindsym z exec zathura "$(fd -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)"; mode "default"
+        bindsym z exec ~/.config/sway/scripts/open-zathura.sh; mode "default"
         bindsym b exec blueman-manager; mode "default"
         bindsym a exec pavucontrol; mode "default"
         bindsym d exec discord; mode "default"
@@ -283,7 +283,7 @@ mode "notifications" {
 
 bindsym $mod+y mode "monitors"
 mode "monitors" {
-        bindsym d exec wdisplays; mode "default332"
+        bindsym d exec wdisplays; mode "default"
         bindsym t exec ~/.config/sway/scripts/map_active.sh; mode "default"
         bindsym s exec ~/.config/sway/scripts/monitor-layout.sh save; mode "default"
         bindsym a exec ~/.config/sway/scripts/monitor-layout.sh apply; mode "default"

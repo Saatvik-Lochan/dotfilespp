@@ -107,6 +107,5 @@ bindkey -M vicmd -s 'H' '^'
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
 
-# # start tmux on startup
+# start tmux on startup
 [[ -z "$TMUX"  ]] && { exec tmux new -A -s "MAIN" }
-
