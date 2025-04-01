@@ -90,6 +90,10 @@
 	/*font-weight: bold;*/
 }
 
+#waybar.empty {
+        background: rgba(232, 37, 37, 1);
+}
+
 /* Each module */
 #battery,
 #clock,

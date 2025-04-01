@@ -109,3 +109,12 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # start tmux on startup
 [[ -z "$TMUX"  ]] && { exec tmux new -A -s "MAIN" }
+
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r '/home/saatvikl/.opam/opam-init/init.zsh' ]] || source '/home/saatvikl/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# END opam configuration
