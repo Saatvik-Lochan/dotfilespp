@@ -107,6 +107,9 @@ bindkey -M vicmd -s 'H' '^'
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
 
+# add key to ssh agent
+eval "$(keychain --quiet --eval id_ed25519)"
+
 # start tmux on startup
 [[ -z "$TMUX"  ]] && { exec tmux new -A -s "MAIN" }
 
