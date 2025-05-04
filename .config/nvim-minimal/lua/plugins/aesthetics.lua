@@ -1,12 +1,17 @@
 return {
   {
-    "ellisonleao/gruvbox.nvim",
+    "sainnhe/gruvbox-material",
     priority = 1000,
     lazy = false,
     config = function()
-      vim.cmd([[colorscheme gruvbox]])
+      vim.cmd([[colorscheme gruvbox-material]])
     end
   },
+  -- { "ellisonleao/gruvbox.nvim" },
+  -- { "EdenEast/nightfox.nvim" }, -- lazy
+  -- { "rebelot/kanagawa.nvim" },
+  -- { 'AlexvZyl/nordic.nvim',    config = function() require('nordic').load() end },
+  -- { "folke/tokyonight.nvim" },
   { -- requires deno
     "toppair/peek.nvim",
     event = { "VeryLazy" },
@@ -21,7 +26,7 @@ return {
     "folke/zen-mode.nvim",
     opts = {},
     keys = {
-      {"<leader>z", ":ZenMode<cr>"}
+      { "<leader>z", ":ZenMode<cr>" }
     }
   }
 }

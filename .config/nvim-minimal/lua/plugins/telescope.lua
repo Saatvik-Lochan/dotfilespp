@@ -18,20 +18,17 @@ return { -- potential speedup with fzf native
           "--line-number",
           "--column",
           "--smart-case",
-          "--trim"           -- add this value
+          "--trim" -- add this value
         },
         mappings = {
           i = {
             ["C-U"] = false,
             ["C-S"] = false
           },
-          n = {
-            ["C-S"] = actions.close
-          }
         },
       },
       pickers = {
-        theme = 'ivy'
+        find_files = { theme = 'ivy' },
       }
     }
 
@@ -46,12 +43,13 @@ return { -- potential speedup with fzf native
       { "<leader>sh", builtin.help_tags,   "[S]earch [H]elp" },
       { "<leader>sg", builtin.live_grep,   "[S]earch [G]rep" },
       { "<leader>sc", builtin.colorscheme, "[S]earch [C]olourschemes" },
-      { "<leader>se", function()
+      { "<leader>se", builtin.find_files,  "[S]earch [E]ntities" },
+      { "<leader>sr", function()
         telescope.extensions['recent-files'].recent_files({})
-      end, "[S]earch [E]ntites (recent files)" },
+      end, "[S]earch [R]ecent (recent files)" },
       { "<leader>sm", function() builtin.lsp_workspace_symbols({ symbols = 'function' }) end, { desc = "[S]earch workspace [M]ethods (functions)" } },
-      { "<leader>sw", builtin.lsp_dynamic_workspace_symbols, { desc = "Search workspace symbols" } },
-      { "<leader>sd", builtin.lsp_document_symbols, { desc = "Search document symbols" } }
+      { "<leader>sw", builtin.lsp_dynamic_workspace_symbols,                                  { desc = "Search workspace symbols" } },
+      { "<leader>sd", builtin.lsp_document_symbols,                                           { desc = "Search document symbols" } }
 
     }
   end
