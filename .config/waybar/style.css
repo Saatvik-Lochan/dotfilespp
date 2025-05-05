@@ -91,7 +91,7 @@
 }
 
 #waybar.empty {
-        background: rgba(232, 37, 37, 1);
+        background: rgba(0, 0, 0, 1);
 }
 
 /* Each module */

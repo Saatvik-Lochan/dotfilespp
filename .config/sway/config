@@ -46,13 +46,19 @@ mode "open" {
 
 # Utilities
 ########################################
+
+# also set in config.d/styles on startup
+set $wallpaperdir ~/Documents/misc/wallpapers
+
 bindsym $mod+semicolon mode "utilities"
 mode "utilities" {
 	# Switch between exam papers and markschemes
         bindsym s exec ~/.config/sway/scripts/solutions.sh; mode "default"
 
 	# Switch timezones
-	bindsym t exec timedatectl set-timezone "$(timedatectl list-timezones | fzfmenu)"; mode "default"
+	bindsym t mode "default"; exec timedatectl set-timezone "$(timedatectl list-timezones | fzfmenu)"; 
+
+	bindsym w mode "default"; exec ~/.config/sway/scripts/change-wallpaper.sh $wallpaperdir; swaybg "*" bg $wallpaperdir
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
