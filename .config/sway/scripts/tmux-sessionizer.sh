@@ -3,23 +3,31 @@
 dirs() {
     depth=$1; shift
     fd . "$@" --exact-depth $depth --type d -L
+    # fd --type d -L ~ "$@"
 }
 
 singles() {
     echo ~/dotfiles
+    echo ~/Documents
+    echo ~/Downloads
+    echo ~/ArchivedDownloads
     echo ~/repos
     echo ~
     echo ~/Documents/studies/part-ii/project/main/qemu/
 }
 
+projects() {
+   {
+     singles & \
+     dirs 1 ~/repos ~/.config & \
+     dirs 3 ~/Documents
+   } 
+}
+
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$({
-        singles & \
-        dirs 1 ~/repos ~/.config & \
-        dirs 3 ~/Documents
-    } | fzf)
+    selected=$(projects | fzf)
 fi
 
 if [[ -z $selected ]]; then
