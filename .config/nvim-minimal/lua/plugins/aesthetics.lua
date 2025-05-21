@@ -28,5 +28,5 @@ return {
     keys = {
       { "<leader>z", ":ZenMode<cr>" }
     }
-  }
+  },
 }

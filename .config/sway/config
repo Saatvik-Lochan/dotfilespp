@@ -160,14 +160,14 @@ bindsym $mod+7 exec swaysome focus 7
 bindsym $mod+8 exec swaysome focus 8
 
 # Move focused container to workspace
-bindsym $mod+Ctrl+1 exec $toggle_workspace && swaysome focus $ws1 && $toggle_workspace
-bindsym $mod+Ctrl+2 exec $toggle_workspace && swaysome focus $ws2 && $toggle_workspace
-bindsym $mod+Ctrl+3 exec $toggle_workspace && swaysome focus $ws3 && $toggle_workspace
-bindsym $mod+Ctrl+4 exec $toggle_workspace && swaysome focus $ws4 && $toggle_workspace
-bindsym $mod+Ctrl+5 exec $toggle_workspace && swaysome focus $ws5 && $toggle_workspace
-bindsym $mod+Ctrl+6 exec $toggle_workspace && swaysome focus $ws6 && $toggle_workspace
-bindsym $mod+Ctrl+7 exec $toggle_workspace && swaysome focus $ws7 && $toggle_workspace
-bindsym $mod+Ctrl+8 exec $toggle_workspace && swaysome focus $ws8 && $toggle_workspace
+bindsym $mod+Ctrl+1 exec swaysome move $ws1
+bindsym $mod+Ctrl+2 exec swaysome move $ws2
+bindsym $mod+Ctrl+3 exec swaysome move $ws3
+bindsym $mod+Ctrl+4 exec swaysome move $ws4
+bindsym $mod+Ctrl+5 exec swaysome move $ws5
+bindsym $mod+Ctrl+6 exec swaysome move $ws6
+bindsym $mod+Ctrl+7 exec swaysome move $ws7
+bindsym $mod+Ctrl+8 exec swaysome move $ws8
 
 # Move to workspace with focused container
 bindsym $mod+Shift+1 exec swaysome move $ws1; exec swaysome focus $ws1

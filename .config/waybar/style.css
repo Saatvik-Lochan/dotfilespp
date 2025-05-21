@@ -29,24 +29,9 @@
 @define-color white	#ebdbb2;
 @define-color bg2	#504945;
 
-/* Old colours: */
-/* @define-color warning 	@bryellow; */
-/* @define-color critical	@red; */
-/* @define-color mode	@black; */
-/* @define-color unfocused	@bg2; */
-/* @define-color focused	@braqua; */
-/* @define-color inactive	@purple; */
-/* @define-color sound	@brpurple; */
-/* @define-color network	@purple; */
-/* @define-color memory	@braqua; */
-/* @define-color cpu	@green; */
-/* @define-color temp	@brgreen; */
-/* @define-color layout	@bryellow; */
-/* @define-color battery	@aqua; */
-/* @define-color tray	@black; */
-/* @define-color time	@white; */
 
-@define-color bright @blue;
+@define-color kaidoblue #3d73c5;
+@define-color bright @kaidoblue;
 @define-color dark @bg2;
 @define-color textcolour @white;
 
