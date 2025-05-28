@@ -30,7 +30,7 @@
 @define-color bg2	#504945;
 
 
-@define-color kaidoblue #3d73c5;
+@define-color kaidoblue #894851;
 @define-color bright @kaidoblue;
 @define-color dark @bg2;
 @define-color textcolour @white;
@@ -44,6 +44,7 @@
 
 @define-color mode	@bright;
 
+@define-color clockify	@dark;
 @define-color sound	@bright;
 @define-color network	@dark;
 @define-color memory	@bright;
@@ -166,6 +167,13 @@
 	margin-left: 0pt;
 }
 
+#custom-clockify {
+        padding-left: 5pt;
+        padding-right: 5pt;
+        background: @clockify;
+        color: @textcolour
+}
+
 #pulseaudio {
 	background: @sound;
 	color: @textcolour;
@@ -261,6 +269,12 @@
 #custom-arrow9 {
 	font-size: 11pt;
 	color: @sound;
+	background: @clockify;
+}
+
+#custom-clockifyarrow {
+	font-size: 11pt;
+	color: @clockify;
 	background: transparent;
 }
 

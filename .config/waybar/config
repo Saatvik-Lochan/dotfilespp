@@ -10,6 +10,8 @@
 	],
 
 	"modules-right": [
+                "custom/clockifyarrow",
+                "custom/clockify",
 		"custom/arrow9",
 		"pulseaudio",
 		"custom/arrow8",
@@ -172,6 +174,11 @@
 		//"spacing": 10
 	},
 
+        "custom/clockify": {
+          "exec": "way-clockify",
+          "on-click": "kill -usr2 $(pgrep -x way-clockify)"
+        },
+
 	"custom/arrow1": {
 		"format": "",
 		"tooltip": false
@@ -213,6 +220,11 @@
 	},
 
 	"custom/arrow9": {
+		"format": "",
+		"tooltip": false
+	},
+
+	"custom/clockifyarrow": {
 		"format": "",
 		"tooltip": false
 	},

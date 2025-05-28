@@ -53,10 +53,14 @@ set $wallpaperdir ~/Documents/misc/wallpapers
 bindsym $mod+semicolon mode "utilities"
 mode "utilities" {
 	# Switch between exam papers and markschemes
-        bindsym s exec ~/.config/sway/scripts/solutions.sh; mode "default"
+        bindsym s mode "default"; exec ~/.config/sway/scripts/solutions.sh
+
+        # refresh clockify module in waybar
+	bindsym c mode "default"; exec kill -usr1 $(pgrep -x way-clockify)
+
 
 	# Switch timezones
-	bindsym t mode "default"; exec timedatectl set-timezone "$(timedatectl list-timezones | fzfmenu)"; 
+	bindsym t mode "default"; exec timedatectl set-timezone "$(timedatectl list-timezones | fzfmenu)"
 
 	bindsym w mode "default"; exec ~/.config/sway/scripts/change-wallpaper.sh $wallpaperdir; swaybg "*" bg $wallpaperdir
 
