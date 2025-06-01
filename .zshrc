@@ -23,6 +23,7 @@ alias n="nvim"
 alias vim="NVIM_APPNAME=nvim-minimal nvim"
 alias ss="satty --copy-command wl-copy --early-exit"
 alias nin="NVIM_APPNAME=nvim-minimal nvim"
+alias smpv="swayhide mpv"
 
 alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."

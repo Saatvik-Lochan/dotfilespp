@@ -168,8 +168,8 @@
 }
 
 #custom-clockify {
-        padding-left: 5pt;
-        padding-right: 5pt;
+        padding-left: 8pt;
+        padding-right: 8pt;
         background: @clockify;
         color: @textcolour
 }
