@@ -175,7 +175,7 @@
 	},
 
         "custom/clockify": {
-          "exec": "way-clockify",
+          "exec": "way-clockify --poll-interval=20s",
           "on-click": "kill -usr2 $(pgrep -x way-clockify)"
         },
 
