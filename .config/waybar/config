@@ -75,7 +75,7 @@
 	},
 
 	"sway/language": {
-		"format": " {variant}",
+		"format": " {variant} {short}",
 		"min-length": 5,
 		"on-click": "swaymsg 'input * xkb_switch_layout next'",
 		"tooltip": false
