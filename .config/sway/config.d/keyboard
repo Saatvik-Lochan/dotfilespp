@@ -1,9 +1,12 @@
 # Input Stuff
 input "type:keyboard" {
-    xkb_layout gb
-    xkb_variant colemak_dh
-    xkb_options ctrl:swapcaps
-}
+    xkb_layout gb,gb
+    xkb_variant colemak_dh,
+    xkb_options ctrl:swapcaps,grp:rctrl_toggle
+
+    repeat_delay 300
+    repeat_rate 30
+} 
 
 input type:touchpad {
     tap enabled
@@ -14,5 +17,5 @@ input type:touchpad {
 }
 
 input "2:10:TPPS/2_Elan_TrackPoint" {
-    pointer_accel 0.5
+    pointer_accel 0.75
 }
