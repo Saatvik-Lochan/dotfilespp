@@ -35,7 +35,7 @@
 	// Modules
 
 	"battery": {
-		"interval": 10,
+		"interval": 30,
 		"full-at": 99,
 		"states": {
 			"warning": 30,
@@ -75,7 +75,7 @@
 	},
 
 	"sway/language": {
-		"format": " {shortDescription} {short} {variant}",
+		"format": " {variant}",
 		"min-length": 5,
 		"on-click": "swaymsg 'input * xkb_switch_layout next'",
 		"tooltip": false
@@ -92,7 +92,7 @@
 	},
 
 	"network": {
-		"interval": 5,
+		"interval": 30,
 		"format-wifi": " {essid} {signalStrength}%",
 		"format-ethernet": " {ifname}",
 		"format-disconnected": "No connection",
@@ -157,7 +157,7 @@
 
 	"temperature": {
 		"critical-threshold": 90,
-		"interval": 5,
+		"interval": 15,
 		"format": "{icon} {temperatureC}°",
 		"format-icons": [
 			"",
@@ -175,7 +175,7 @@
 	},
 
         "custom/clockify": {
-          "exec": "way-clockify --poll-interval=20s",
+          "exec": "way-clockify --poll-interval=30s",
           "on-click": "kill -usr2 $(pgrep -x way-clockify)"
         },
 
