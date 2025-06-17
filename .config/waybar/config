@@ -75,9 +75,8 @@
 	},
 
 	"sway/language": {
-		"format": " {variant} {short}",
-		"min-length": 5,
-		"on-click": "swaymsg 'input * xkb_switch_layout next'",
+		"format": " cmak+kmonad",
+		// "on-click": "swaymsg 'input * xkb_switch_layout next'",
 		"tooltip": false
 	},
 

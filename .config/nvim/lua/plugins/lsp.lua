@@ -1,4 +1,5 @@
 return {
+  { 'kmonad/kmonad-vim' },
 
   {
     "nvim-treesitter/nvim-treesitter", build = ":TSUpdate"

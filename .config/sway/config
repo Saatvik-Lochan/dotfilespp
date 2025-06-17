@@ -8,7 +8,7 @@ set $alt Mod4
 floating_modifier $mod
 
 bindsym Mod1+9 exit
-bindsym $mod+Shift+q kill
+bindsym $mod+q kill
 bindsym $mod+Shift+r reload
 
 # Application bindings
@@ -140,8 +140,6 @@ bindgesture swipe:3:left focus left
 # bindgesture swipe:5:left move left
 # bindgesture swipe:5:right move right
 
-bindsym $mod+Tab exec $toggle_workspace
-bindsym $mod+u exec $move_to_alternate && $toggle_workspace
 
 # Switch workspace group (only if moving from one to another)
 bindsym $alt+1 exec swaysome focus-group 1
@@ -303,3 +301,10 @@ mode "monitors" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+
+bindsym $mod+Tab exec $toggle_workspace
+bindsym $mod+shift+u exec $move_to_alternate && $toggle_workspace
+
+# Swayr Bindings
+########################################
+# bindsym $mod+Tab exec swayr next-window current-workspace

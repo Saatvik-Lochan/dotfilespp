@@ -165,6 +165,9 @@
 
 #window {
 	margin-left: 0pt;
+        /* max-width: 25%; */
+        /* overflow: hidden; */
+        /* text-overflow: ellipsis; */
 }
 
 #custom-clockify {

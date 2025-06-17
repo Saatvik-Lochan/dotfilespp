@@ -1,12 +1,12 @@
 # Input Stuff
-input "type:keyboard" {
-    xkb_layout gb,gb
-    xkb_variant colemak_dh,
-    xkb_options ctrl:swapcaps,grp:rctrl_toggle
-
-    repeat_delay 300
-    repeat_rate 30
-} 
+# input "type:keyboard" {
+#     xkb_layout gb,gb
+#     xkb_variant ,colemak_dh
+#     xkb_options grp:rctrl_toggle
+#
+#     repeat_delay 300
+#     repeat_rate 30
+# } 
 
 input type:touchpad {
     tap enabled
