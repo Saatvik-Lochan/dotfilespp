@@ -3,10 +3,11 @@
 	"position": "top", // top | bottom
 
 	"modules-left": [
-		"sway/mode",
-		"sway/workspaces",
+		"river/mode",
+		"river/layout",
+		"river/tags",
 		"custom/arrow10",
-		"sway/window"
+		"river/window"
 	],
 
 	"modules-right": [
@@ -74,10 +75,8 @@
 		}
 	},
 
-	"sway/language": {
-		"format": " cmak+kmonad",
-		// "on-click": "swaymsg 'input * xkb_switch_layout next'",
-		"tooltip": false
+	"river/layout": {
+                "format": "{}"
 	},
 
 	"memory": {
@@ -99,41 +98,21 @@
 		"tooltip": false
 	},
 
-	"sway/mode": {
+	"river/mode": {
 		"format": "{}",
 		"tooltip": false
 	},
 
-	"sway/window": {
+	"river/window": {
 		"format": "{}",
 		"tooltip": false,
 		"icon": true,
 		"icon-size": 18,
 	},
 
-	"sway/workspaces": {
-		"disable-scroll-wraparound": true,
-		"smooth-scrolling-threshold": 4,
-		"enable-bar-scroll": true,
-		"format": "{icon}",
-		"format-icons": {
-			"11": "1",
-			"12": "2",
-			"13": "3",
-			"14": "4",
-			"15": "5",
-			"16": "6",
-			"17": "7",
-			"18": "8",
-			"21": "1",
-			"22": "2",
-			"23": "3",
-			"24": "4",
-			"25": "5",
-			"26": "6",
-			"27": "7",
-			"28": "8",
-		}
+	"river/tags": {
+                "num-tags": 5,
+                "hide-vacant": true
 	},
 
 	"pulseaudio": {
