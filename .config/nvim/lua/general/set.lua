@@ -10,6 +10,7 @@ set.shiftwidth = 2
 set.expandtab = true
 
 set.smartindent = true
+set.wrap = false
 
 set.swapfile = false
 set.backup = false

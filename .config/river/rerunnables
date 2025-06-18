@@ -1,0 +1,158 @@
+#!/bin/zsh
+
+set -e
+set -o pipefail
+
+# create and destroy
+riverctl map normal Alt Return spawn kitty
+riverctl map normal Alt D spawn fuzzel
+riverctl map normal Alt C spawn 'firefox'
+riverctl map normal Alt+Control C spawn 'firefox --profile /home/saatvikl/.mozilla/firefox/2vmq0iuu.cam'
+
+riverctl map normal Alt Q close
+
+# river ops
+riverctl map normal Alt+Shift E exit
+
+runnablefile="${0:A}"
+notify='&& notify-send "updated river" || notify_send "failed to update river completely"'
+riverctl map normal Alt+Shift C spawn "$runnablefile $notify"
+
+# navigation and movements
+riverctl map normal Alt J focus-view next
+riverctl map normal Alt K focus-view previous
+riverctl map normal Alt+Shift J swap next
+riverctl map normal Alt+Shift K swap previous
+riverctl map normal Alt Z zoom
+
+riverctl map normal Alt Period focus-output next
+riverctl map normal Alt Comma focus-output previous
+riverctl map normal Alt+Shift Period send-to-output next
+riverctl map normal Alt+Shift Comma send-to-output previous
+
+for i in $(seq 1 9)
+do
+    tags=$((1 << ($i - 1)))
+
+    riverctl map normal Alt $i set-focused-tags $tags
+    riverctl map normal Alt+Shift $i set-view-tags $tags
+    riverctl map normal Alt+Control $i toggle-focused-tags $tags
+    riverctl map normal Alt+Shift+Control $i toggle-view-tags $tags
+done
+
+scratch_tag=$((1 << 20))
+
+all_tags=$((1 << 32 - 1))
+all_but_scratch_tag=$all_tags
+
+for c in A R S T N Minus
+do 
+  riverctl map normal Alt $c toggle-focused-tags ${scratch_tag}		# toggle the scratchpad
+  riverctl map normal Alt+Shift $c set-view-tags ${scratch_tag}		# send windows to the scratchpad
+  riverctl map normal Alt+Control $c set-focused-tags ${scratch_tag}		# send windows to the scratchpad
+
+  all_but_scratch_tag=$(($all_but_scratch_tag ^ $scratch_tag))
+  scratch_tag=$(($scratch_tag << 1))
+done
+
+riverctl spawn-tagmask ${all_but_scratch_tag}
+
+# Set spawn tagmask to ensure new windows do not have the scratchpad tag unless explicitly set.
+riverctl map normal Alt 0 set-focused-tags $all_tags
+riverctl map normal Alt+Shift 0 set-view-tags $all_tags
+
+# mouse stuff
+riverctl map-pointer normal Alt BTN_LEFT move-view
+riverctl map-pointer normal Alt BTN_RIGHT resize-view
+riverctl map-pointer normal Alt BTN_MIDDLE toggle-float
+
+# Wideriver commands
+# riverctl map normal Alt W send-layout-cmd wideriver "--layout monocle"
+# riverctl map normal Alt E send-layout-cmd wideriver "--layout left"
+
+riverctl map normal Alt H send-layout-cmd wideriver "--ratio -0.05"
+riverctl map normal Alt L send-layout-cmd wideriver "--ratio +0.05"
+riverctl map normal Alt+Shift I send-layout-cmd wideriver "--count +1"
+riverctl map normal Alt+Shift D send-layout-cmd wideriver "--count -1"
+
+# Super+Space to toggle float
+riverctl map normal Alt Space toggle-float
+riverctl map normal Alt F toggle-fullscreen
+
+# Declare a passthrough mode. This mode has only a single mapping to return to
+# normal mode. This makes it useful for testing a nested wayland compositor
+riverctl declare-mode passthrough
+riverctl map normal Alt F11 enter-mode passthrough
+riverctl map passthrough Alt F11 enter-mode normal
+
+# Media Keys
+for mode in normal locked
+do
+    riverctl map $mode None XF86AudioRaiseVolume  spawn '~/scripts/volume.sh inc 5'
+    riverctl map $mode None XF86AudioLowerVolume  spawn '~/scripts/volume.sh dec 5'
+    riverctl map $mode Shift XF86AudioRaiseVolume  spawn '~/scripts/volume.sh inc 1'
+    riverctl map $mode Shift XF86AudioLowerVolume  spawn '~/scripts/volume.sh dec 1'
+    riverctl map $mode None XF86AudioMute         spawn 'amixer -D pulse set Master toggle'
+
+    riverctl map $mode None XF86MonBrightnessUp   spawn '~/scripts/brightness.sh inc 10'
+    riverctl map $mode None XF86MonBrightnessDown spawn '~/scripts/brightness.sh dec 10'
+    riverctl map $mode Shift XF86MonBrightnessUp   spawn '~/scripts/brightness.sh inc 1'
+    riverctl map $mode Shift XF86MonBrightnessDown spawn '~/scripts/brightness.sh dec 1'
+done
+
+# Screenshots
+riverctl map normal Alt P spawn '~/scripts/screenshot.sh select copy'
+riverctl map normal Alt+Control P spawn '~/scripts/screenshot.sh select edit'
+
+rmode="riverctl enter-mode normal"
+
+# Open modes
+riverctl declare-mode open
+riverctl map normal Alt o enter-mode open
+
+riverctl map open None e spawn "$rmode; emacsclient -nca \"\""
+riverctl map open None n spawn "$rmode; neovide"
+riverctl map open None z spawn "$rmode; ~/.config/sway/scripts/open-zathura.sh"
+riverctl map open None f spawn "$rmode; pcmanfm"
+riverctl map open None b spawn "$rmode; blueman-manager"
+riverctl map open None a spawn "$rmode; pavucontrol"
+riverctl map open None d spawn "$rmode; discord"
+riverctl map open None s spawn "$rmode; spotify"
+riverctl map open None Escape enter-mode normal
+
+# Set background and border color
+riverctl background-color 0x002b36
+riverctl border-color-focused 0x93a1a1
+riverctl border-color-unfocused 0x586e75
+
+riverctl focus-follows-cursor always
+riverctl default-attach-mode below
+
+# Set keyboard repeat rate
+riverctl set-repeat 50 300
+
+# Make all views with an app-id that starts with "float" and title "foo" start floating.
+riverctl rule-add -app-id 'float*' -title 'foo' float
+riverctl rule-add ssd
+
+# start and set layout manager
+riverctl default-layout wideriver
+wideriver \
+    --layout                       left        \
+    --layout-alt                   monocle     \
+    --stack                        dwindle     \
+    --count-master                 1           \
+    --ratio-master                 0.50        \
+    --count-wide-left              0           \
+    --ratio-wide                   0.35        \
+    --smart-gaps                               \
+    --inner-gaps                   12          \
+    --outer-gaps                   12          \
+    --border-width                 2           \
+    --border-width-monocle         0           \
+    --border-width-smart-gaps      0           \
+    --border-color-focused         "0x93a1a1"  \
+    --border-color-focused-monocle "0x586e75"  \
+    --border-color-unfocused       "0x586e75"  \
+    --log-threshold                info        \
+   > "/tmp/wideriver.${XDG_VTNR}.${USER}.log" 2>&1 &

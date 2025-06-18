@@ -26,7 +26,7 @@
 		"custom/arrow4",
 		"battery",
 		"custom/arrow3",
-		"sway/language",
+		"custom/kbd",
 		"custom/arrow2",
 		"tray",
 		"custom/arrow1",
@@ -113,6 +113,10 @@
 	"river/tags": {
                 "num-tags": 5,
                 "hide-vacant": true
+	},
+
+	"custom/kbd": {
+                "format": "cmak"
 	},
 
 	"pulseaudio": {
