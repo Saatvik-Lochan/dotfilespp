@@ -99,8 +99,6 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-eval $(thefuck --alias)
-
 # Vim Config
 ZVM_VI_ESCAPE_BINDKEY="^S"
 ZVM_VI_INSERT_ESCAPE_BINDKEY="^S"
@@ -110,14 +108,5 @@ bindkey -M vicmd -s 'H' '^'
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
 
-# start tmux on startup
-[[ -z "$TMUX"  ]] && { exec tmux new -A -s "MAIN" }
-
-
-# BEGIN opam configuration
-# This is useful if you're using opam as it adds:
-#   - the correct directories to the PATH
-#   - auto-completion for the opam binary
-# This section can be safely removed at any time if needed.
-[[ ! -r '/home/saatvikl/.opam/opam-init/init.zsh' ]] || source '/home/saatvikl/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
-# END opam configuration
+# start tmux on startup, must be done last
+[[ -z "$TMUX"  ]] && exec tmux || ~/scripts/clean-tmux.sh

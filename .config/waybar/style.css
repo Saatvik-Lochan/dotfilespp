@@ -31,7 +31,7 @@
 
 
 @define-color kaidoblue #894851;
-@define-color bright @kaidoblue;
+@define-color bright #8a7142;
 @define-color dark @bg2;
 @define-color textcolour @white;
 
@@ -84,7 +84,7 @@
 #battery,
 #clock,
 #cpu,
-#language,
+#kbd,
 #memory,
 #mode,
 #network,
@@ -138,25 +138,25 @@
 }
 
 /* Inactive (on unfocused output) */
-#tags button.visible {
+#workspaces button.visible {
 	color: @white;
 	background: @inactive;
 }
 
 /* Active (on focused output) */
-#tags button.focused {
+#workspaces button.focused {
 	color: @white;
 	background: @focused;
 }
 
 /* Contains an urgent window */
-#tags button.urgent {
+#workspaces button.urgent {
 	color: @white;
 	background: @warning;
 }
 
 /* Style when cursor is on the button */
-#tags button:hover {
+#workspaces button:hover {
 	background: @black;
 	color: @white;
 }
@@ -186,7 +186,7 @@
 }
 
 #memory {
-	background: @memory;
+	background: @layout;
 	color: @textcolour;
 }
 
@@ -200,7 +200,7 @@
 	color: @textcolour;
 }
 
-#language {
+#idle_inhibitor {
 	background: @layout;
 	color: @textcolour;
 }

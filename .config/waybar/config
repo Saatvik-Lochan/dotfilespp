@@ -3,11 +3,9 @@
 	"position": "top", // top | bottom
 
 	"modules-left": [
-		"river/mode",
-		"river/layout",
-		"river/tags",
+		"niri/workspaces",
 		"custom/arrow10",
-		"river/window"
+		"niri/window"
 	],
 
 	"modules-right": [
@@ -26,7 +24,7 @@
 		"custom/arrow4",
 		"battery",
 		"custom/arrow3",
-		"custom/kbd",
+		"idle_inhibitor",
 		"custom/arrow2",
 		"tray",
 		"custom/arrow1",
@@ -88,6 +86,14 @@
 		},
 		"tooltip": false
 	},
+
+        "idle_inhibitor": {
+            "format": "{icon}",
+            "format-icons": {
+                "activated": "",
+                "deactivated": ""
+            }
+        },
 
 	"network": {
 		"interval": 30,

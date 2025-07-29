@@ -5,6 +5,7 @@ set -o pipefail
 
 # create and destroy
 riverctl map normal Alt Return spawn kitty
+riverctl map normal Alt+Shift Return spawn 'kitty -e tmux'
 riverctl map normal Alt D spawn fuzzel
 riverctl map normal Alt C spawn 'firefox'
 riverctl map normal Alt+Control C spawn 'firefox --profile /home/saatvikl/.mozilla/firefox/2vmq0iuu.cam'
@@ -15,8 +16,10 @@ riverctl map normal Alt Q close
 riverctl map normal Alt+Shift E exit
 
 runnablefile="${0:A}"
-notify='&& notify-send "updated river" || notify_send "failed to update river completely"'
-riverctl map normal Alt+Shift C spawn "$runnablefile $notify"
+logfile="/tmp/river-reload.log"
+notify="notify-send 'updated river' || (notify-send 'failed to update river completely'; alacritty -e sh -c 'less $logfile')"
+echo $notify
+riverctl map normal Alt+Shift C spawn "$runnablefile > $logfile 2>&1 && $notify"
 
 # navigation and movements
 riverctl map normal Alt J focus-view next
@@ -25,10 +28,12 @@ riverctl map normal Alt+Shift J swap next
 riverctl map normal Alt+Shift K swap previous
 riverctl map normal Alt Z zoom
 
-riverctl map normal Alt Period focus-output next
-riverctl map normal Alt Comma focus-output previous
-riverctl map normal Alt+Shift Period send-to-output next
-riverctl map normal Alt+Shift Comma send-to-output previous
+# riverctl map normal Alt Period focus-output next
+# riverctl map normal Alt Comma focus-output previous
+# riverctl map normal Alt+Shift Period send-to-output next
+# riverctl map normal Alt+Shift Comma send-to-output previous
+riverctl map normal Alt Tab focus-output next
+riverctl map normal Alt U send-to-output next
 
 for i in $(seq 1 9)
 do
@@ -47,7 +52,7 @@ all_but_scratch_tag=$all_tags
 
 for c in A R S T N Minus
 do 
-  riverctl map normal Alt $c toggle-focused-tags ${scratch_tag}		# toggle the scratchpad
+  riverctl map normal Alt $c spawn "riverctl toggle-focused-tags ${scratch_tag} && riverctl focus-view next"
   riverctl map normal Alt+Shift $c set-view-tags ${scratch_tag}		# send windows to the scratchpad
   riverctl map normal Alt+Control $c set-focused-tags ${scratch_tag}		# send windows to the scratchpad
 
@@ -56,10 +61,11 @@ do
 done
 
 riverctl spawn-tagmask ${all_but_scratch_tag}
+riverctl spawn-tagmask ${all_but_scratch_tag}
 
 # Set spawn tagmask to ensure new windows do not have the scratchpad tag unless explicitly set.
-riverctl map normal Alt 0 set-focused-tags $all_tags
-riverctl map normal Alt+Shift 0 set-view-tags $all_tags
+# riverctl map normal Alt 0 set-focused-tags $all_tags
+# riverctl map normal Alt+Shift 0 set-view-tags $all_tags
 
 # mouse stuff
 riverctl map-pointer normal Alt BTN_LEFT move-view
@@ -67,8 +73,8 @@ riverctl map-pointer normal Alt BTN_RIGHT resize-view
 riverctl map-pointer normal Alt BTN_MIDDLE toggle-float
 
 # Wideriver commands
-# riverctl map normal Alt W send-layout-cmd wideriver "--layout monocle"
-# riverctl map normal Alt E send-layout-cmd wideriver "--layout left"
+riverctl map normal Alt W send-layout-cmd wideriver "--layout monocle"
+riverctl map normal Alt E send-layout-cmd wideriver "--layout left"
 
 riverctl map normal Alt H send-layout-cmd wideriver "--ratio -0.05"
 riverctl map normal Alt L send-layout-cmd wideriver "--ratio +0.05"
@@ -118,6 +124,7 @@ riverctl map open None b spawn "$rmode; blueman-manager"
 riverctl map open None a spawn "$rmode; pavucontrol"
 riverctl map open None d spawn "$rmode; discord"
 riverctl map open None s spawn "$rmode; spotify"
+riverctl map open None q spawn "$rmode; qutebrowser"
 riverctl map open None Escape enter-mode normal
 
 # Set background and border color
@@ -127,13 +134,28 @@ riverctl border-color-unfocused 0x586e75
 
 riverctl focus-follows-cursor always
 riverctl default-attach-mode below
+riverctl set-cursor-warp on-focus-change
 
-# Set keyboard repeat rate
+# Set keyboard repeat rateprevious
 riverctl set-repeat 50 300
 
 # Make all views with an app-id that starts with "float" and title "foo" start floating.
 riverctl rule-add -app-id 'float*' -title 'foo' float
+riverctl rule-add -title 'fzfmenu' float
 riverctl rule-add ssd
+
+# Logout
+riverctl declare-mode lock
+
+riverctl map normal Alt 0 enter-mode lock
+riverctl map lock None L spawn "$rmode; ~/scripts/lock.sh"
+riverctl map lock None S spawn "$rmode; systemctl suspend"
+riverctl map lock None U spawn "$rmode; dm-tool switch-to-greeter"
+riverctl map lock None E spawn "$rmode; swaymsg exit"
+riverctl map lock None H spawn "$rmode; systemctl hibernate"
+riverctl map lock None R spawn "$rmode; systemctl reboot"
+riverctl map lock Shift S spawn "$rmode; systemctl poweroff"
+riverctl map lock None Escape enter-mode normal
 
 # start and set layout manager
 riverctl default-layout wideriver
