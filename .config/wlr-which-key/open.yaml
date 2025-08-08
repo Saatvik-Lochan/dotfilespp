@@ -23,15 +23,24 @@ margin_top: 0
 inhibit_compositor_keyboard_shortcuts: true
 
 menu:
+  - key: "e"
+    desc: Emacs
+    cmd: emacsclient -nca ""
+  - key: "z"
+    desc: Zathura (pdf)
+    cmd: ~/scripts/open-zathura.sh
+  - key: "b"
+    desc: Bluetooth
+    cmd: blueman-manager
+  - key: "a"
+    desc: Audio
+    cmd: pavucontrol
+  - key: "f"
+    desc: Filemanager
+    cmd: pcmanfm
+  - key: "d"
+    desc: Discord
+    cmd: discord
   - key: "s"
-    desc: Sleep
-    cmd: systemctl suspend
-  - key: "r"
-    desc: Reboot
-    cmd: systemctl reboot
-  - key: "S"
-    desc: Shutdown
-    cmd: systemctl poweroff
-  - key: "h"
-    desc: Hibernate
-    cmd: systemctl hibernate
+    desc: Spotify
+    cmd: spotify
