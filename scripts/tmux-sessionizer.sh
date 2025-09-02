@@ -21,6 +21,7 @@ projects() {
    {
      singles & \
      dirs 1 ~/repos ~/.config & \
+     dirs 2 ~/Documents
      dirs 3 ~/Documents
    } 
 }
