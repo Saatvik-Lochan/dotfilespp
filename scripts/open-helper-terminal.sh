@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # First we get the current tmux session
-current_session=$(tmux display-message -p '#{session_name}')
-current_path=$(tmux display-message -p -F "#{pane_current_path}")
+current_session=$(tmux display-message -p '#{session_name}' || echo "main")
+current_path=$(tmux display-message -p -F "#{pane_current_path}" || echo "/home/saatvikl")
 
 increment_string() {
     local str="$1"
@@ -25,4 +25,6 @@ increment_string() {
     echo "$prefix+$new_num"
 }
 
-tmux new -s $(increment_string $current_session) -c "$current_path"
+new_session=$(increment_string $current_session)
+exec tmux new -s "$new_session" -c "$current_path"
+

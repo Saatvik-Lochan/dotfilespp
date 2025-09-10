@@ -1,6 +1,17 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+
+if [ -z "$TMUX" ]; then
+  if [[ -z "$OPEN_COPIED_TERM" ]]; then
+    exec tmux
+  else
+    exec ~/scripts/open-helper-terminal.sh
+  fi
+else 
+  ~/scripts/clean-tmux.sh
+fi
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -109,4 +120,9 @@ bindkey -M vicmd -s 'H' '^'
 eval "$(zoxide init --cmd cd zsh)"
 
 # start tmux on startup, must be done last
-[[ -z "$TMUX"  ]] && exec ~/scripts/open-helper-terminal.sh || ~/scripts/clean-tmux.sh
+# if [[ "$TERM" != "screen" ]]; then
+#   ~/scripts/open-helper-terminal.sh 
+# else 
+#   ~/scripts/clean-tmux.sh
+# fi
+
