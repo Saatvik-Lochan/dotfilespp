@@ -8,8 +8,6 @@ if [ -z "$TMUX" ]; then
   else
     exec ~/scripts/open-helper-terminal.sh
   fi
-else 
-  ~/scripts/clean-tmux.sh
 fi
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -118,11 +116,4 @@ bindkey -M vicmd -s 'H' '^'
 
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
-
-# start tmux on startup, must be done last
-# if [[ "$TERM" != "screen" ]]; then
-#   ~/scripts/open-helper-terminal.sh 
-# else 
-#   ~/scripts/clean-tmux.sh
-# fi
 
