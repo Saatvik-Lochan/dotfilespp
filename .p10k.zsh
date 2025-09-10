@@ -29,15 +29,17 @@
   # Zsh >= 5.1 is required.
   [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
 
+  # HERE IS MY OWN CODE FOR THE TMUX THING!
+  # ----------------------------------------
   if [[ -n "$TMUX" ]]; then
-    export TMUX_SESSION_NAME=$(tmux display-message -p '#S' 2>/dev/null)
+    local session_name=$(tmux display-message -p '#S' 2>/dev/null)
+    export TMUX_SESSION_NAME=$(~/scripts/truncate_middle.sh "$session_name" 25)
   fi
 
   p10k_tmux_session() {
     # Only show if inside tmux
     if [[ -n "$TMUX_SESSION_NAME" ]]; then
-      local session_name=$(tmux display-message -p '#S')
-      print -P "%F{cyan}[$session_name]%f"
+      print -P "%F{cyan}[$TMUX_SESSION_NAME]%f"
     fi
   }
   typeset -g POWERLEVEL9K_CUSTOM_TMUX_SESSION="p10k_tmux_session"
@@ -47,6 +49,7 @@
     # =========================[ Line #1 ]=========================
     # os_icon               # os identifier
     custom_tmux_session
+  # ---------------------------------------- HERE IS WHERE MY CODE ENDS
     dir                     # current directory
     vcs                     # git status
     # =========================[ Line #2 ]=========================
