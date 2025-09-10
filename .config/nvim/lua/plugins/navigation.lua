@@ -29,20 +29,33 @@ return {
       end }
     },
     config = function()
-      -- local fb_actions = require('telescope').extensions.file_browser.actions
+      local fb_actions = require('telescope').extensions.file_browser.actions
       local actions = require('telescope.actions')
       require('telescope').setup {
         extensions = {
           file_browser = {
+            theme = "ivy",
             sorting_strategy = "ascending",
-            default_selection_index = 2,
+            default_selection_index = 1,
+            hide_parent_dir = true,
+            select_buffer = true,
+            prompt_path = true,
             mappings = {
               ["i"] = {
                 ["<C-i>"] = actions.select_default,
-                ["<C-w>"] = function() 
-                  vim.api.nvim_input("<c-s-w>")
+                ["<C-s>"] = actions.close,
+                ["<C-u>"] = false,
+                ["<C-w>"] = function(prompt_bufnr)
+                  local lines = vim.api.nvim_buf_get_lines(prompt_bufnr, 0, -1, false)
+                  local last_line = lines[#lines]
+                  local last_char = last_line:sub(-1)
+
+                  if last_char == "/" then
+                    fb_actions.goto_parent_dir(prompt_bufnr)
+                  else
+                    vim.api.nvim_input("<c-s-w>")
+                  end
                 end,
-                ["<C-u>"] = false
               }
             }
           }
