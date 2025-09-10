@@ -109,4 +109,4 @@ bindkey -M vicmd -s 'H' '^'
 eval "$(zoxide init --cmd cd zsh)"
 
 # start tmux on startup, must be done last
-[[ -z "$TMUX"  ]] && exec tmux || ~/scripts/clean-tmux.sh
+[[ -z "$TMUX"  ]] && exec ~/scripts/open-helper-terminal.sh || ~/scripts/clean-tmux.sh

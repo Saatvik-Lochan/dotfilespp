@@ -23,27 +23,9 @@ margin_top: 0
 inhibit_compositor_keyboard_shortcuts: true
 
 menu:
-  - key: "e"
-    desc: Emacs
-    cmd: emacsclient -nca ""
-  - key: "z"
-    desc: Zathura (pdf)
-    cmd: ~/scripts/open-zathura.sh
-  - key: "b"
-    desc: Bluetooth
-    cmd: blueman-manager
-  - key: "a"
-    desc: Audio
-    cmd: pavucontrol
-  - key: "f"
-    desc: Filemanager
-    cmd: pcmanfm
-  - key: "d"
-    desc: Discord
-    cmd: discord
-  - key: "s"
-    desc: Spotify
-    cmd: spotify
-  - key: "v"
-    desc: VPN
-    cmd: protonvpn-app
+  - key: "t"
+    desc: Timezone
+    cmd: ~/scripts/timezone.sh
+  - key: "w"
+    desc: Wallpaper
+    cmd: ~/scripts/change-wallpaper.sh
