@@ -25,7 +25,4 @@ increment_string() {
     echo "$prefix+$new_num"
 }
 
-# Then we try to increment it
-
-
 tmux new -s $(increment_string $current_session) -c "$current_path"
