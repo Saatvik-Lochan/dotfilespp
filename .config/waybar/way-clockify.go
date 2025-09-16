@@ -105,13 +105,19 @@ func parseFlexibleDuration(s string) (time.Duration, error) {
 }
 
 func poll() (time.Duration, error) {
+	// cmd := exec.Command("bash", "-c", `
+	// 	swaymsg -t get_tree | jq -r '
+	// 	  first(recurse(.nodes[]?, .floating_nodes[]?)
+	// 	    | select(.app_id == "firefox")
+	// 	    | select(.name | test(".* • Clockify — Mozilla Firefox"))
+	// 	    | .name
+	// 	    ) // error("No clockify instances")'
+	// `)
+
 	cmd := exec.Command("bash", "-c", `
-		swaymsg -t get_tree | jq -r '
-		  first(recurse(.nodes[]?, .floating_nodes[]?) 
-		    | select(.app_id == "firefox") 
-		    | select(.name | test(".* • Clockify — Mozilla Firefox"))
-		    | .name
-		    ) // error("No clockify instances")'
+		niri msg -j windows | jq ' .[] 
+		   | select(.title | test(".* • Clockify — Mozilla Firefox")) 
+		   | .title // error("No clockify instances")' 
 	`)
 
 	out, err := cmd.Output()
@@ -120,7 +126,9 @@ func poll() (time.Duration, error) {
 		return 0, err
 	}
 
-	return parseFlexibleDuration(string(out))
+	string_out := strings.Trim(string(out), `"`)
+
+	return parseFlexibleDuration(string_out)
 }
 
 func poller(poll_interval time.Duration, done, force <-chan bool) (<-chan time.Duration, <-chan bool) {
@@ -162,7 +170,7 @@ func poller(poll_interval time.Duration, done, force <-chan bool) (<-chan time.D
 }
 
 func main() {
-	poll_interval := flag.Duration("poll-interval", 15 * time.Second,
+	poll_interval := flag.Duration("poll-interval", 15*time.Second,
 		"The interval at which to poll sway")
 
 	done := make(chan bool)
