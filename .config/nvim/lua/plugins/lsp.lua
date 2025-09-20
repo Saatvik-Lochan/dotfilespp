@@ -43,6 +43,16 @@ return {
         }
       })
 
+      require("lspconfig").rust_analyzer.setup {
+        cmd = { "rust-analyzer" },
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = { allFeatures = true },
+            checkOnSave = { command = "clippy" }
+          }
+        }
+      }
+
       local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
       cmp.setup({
