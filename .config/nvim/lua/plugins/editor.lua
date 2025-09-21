@@ -5,7 +5,11 @@ return {
     event = "VeryLazy",
     opts = true
   },
-
+  {
+      'Chaitanyabsprip/fastaction.nvim',
+      event = "VeryLazy",
+      opts = {},
+  },
   {
     "echasnovski/mini.nvim",
     version = '*',

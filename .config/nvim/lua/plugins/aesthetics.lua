@@ -5,7 +5,7 @@ return {
     lazy = false,
     config = function()
       vim.cmd([[colorscheme gruvbox-material]])
-    end
+    end,
   },
   -- { "ellisonleao/gruvbox.nvim" },
   -- { "EdenEast/nightfox.nvim" }, -- lazy
