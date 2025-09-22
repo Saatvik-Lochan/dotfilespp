@@ -22,7 +22,7 @@ return { -- potential speedup with fzf native
         },
         mappings = {
           i = {
-            ["C-U"] = false,
+            ["C-u"] = false,
             ["C-S"] = false
           },
         },
@@ -56,10 +56,10 @@ return { -- potential speedup with fzf native
     end
 
     return {
-      { "<leader>sh", builtin.help_tags,   "[S]earch [H]elp" },
-      { "<leader>sg", builtin.live_grep,   "[S]earch [G]rep" },
-      { "<leader>sc", builtin.colorscheme, "[S]earch [C]olourschemes" },
-      { "<leader>se", find_files_from_root,  "[S]earch [E]ntities" },
+      { "<leader>sh", builtin.help_tags,    "[S]earch [H]elp" },
+      { "<leader>sg", builtin.live_grep,    "[S]earch [G]rep" },
+      { "<leader>sc", builtin.colorscheme,  "[S]earch [C]olourschemes" },
+      { "<leader>se", find_files_from_root, "[S]earch [E]ntities" },
       { "<leader>sr", function()
         telescope.extensions['recent-files'].recent_files({})
       end, "[S]earch [R]ecent (recent files)" },

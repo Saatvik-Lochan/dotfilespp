@@ -21,6 +21,9 @@ return {
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
         callback = function(ev)
+          -- We set the cwd to the lsp cwd
+          vim.fn.chdir(vim.lsp.get_client_by_id(ev.data.client_id).config.root_dir)
+
           local opts = { buffer = ev.buf }
 
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
