@@ -22,6 +22,8 @@ MapKey('L', '$', "Super right", { 'n', 'v', 'o' })
 MapKey('go', 'gd', "GO to definition (hurts my hand to type gd)")
 MapKey('<leader>`', ':b#<cr>', "Toggle previous file")
 
+MapKey('<leader>w', '<c-w>w', "Next window")
+
 MapKey('<C-h>', ':bp<cr>', "Previous Buffer")
 MapKey('<C-l>', ':bn<cr>', "Next Buffer")
 MapKey('<C-j>', ':cn<cr>', "Quick fix next")
