@@ -39,11 +39,27 @@ return { -- potential speedup with fzf native
     local builtin = require('telescope.builtin')
     local telescope = require('telescope')
 
+    local function find_files_from_root()
+      local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+      if #clients == 0 then
+        builtin.find_files()
+        return
+      end
+
+      local root_dir = clients[1].config.root_dir
+      if root_dir == nil then
+        builtin.find_files()
+        builtin.find_files()
+      end
+
+      builtin.find_files({ cwd = root_dir })
+    end
+
     return {
       { "<leader>sh", builtin.help_tags,   "[S]earch [H]elp" },
       { "<leader>sg", builtin.live_grep,   "[S]earch [G]rep" },
       { "<leader>sc", builtin.colorscheme, "[S]earch [C]olourschemes" },
-      { "<leader>se", builtin.find_files,  "[S]earch [E]ntities" },
+      { "<leader>se", find_files_from_root,  "[S]earch [E]ntities" },
       { "<leader>sr", function()
         telescope.extensions['recent-files'].recent_files({})
       end, "[S]earch [R]ecent (recent files)" },
