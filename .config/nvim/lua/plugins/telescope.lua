@@ -49,7 +49,7 @@ return { -- potential speedup with fzf native
       local root_dir = clients[1].config.root_dir
       if root_dir == nil then
         builtin.find_files()
-        builtin.find_files()
+        return
       end
 
       builtin.find_files({ cwd = root_dir })
