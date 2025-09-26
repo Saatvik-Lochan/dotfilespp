@@ -14,7 +14,6 @@ return {
     "echasnovski/mini.nvim",
     version = '*',
     config = function()
-      require('mini.pairs').setup()
       require('mini.ai').setup()
       require('mini.splitjoin').setup()
     end
@@ -145,7 +144,6 @@ return {
       }
     end
   },
-
   {
     "debugloop/telescope-undo.nvim",
     dependencies = { -- note how they're inverted to above example
