@@ -31,7 +31,11 @@
 
 
 @define-color kaidoblue #894851;
-@define-color bright #8a7142;
+@define-color weird-yellow #8a7142;
+@define-color whitebeard #888c89;
+
+/* Base colours */
+@define-color bright @whitebeard;
 @define-color dark @bg2;
 @define-color textcolour @white;
 

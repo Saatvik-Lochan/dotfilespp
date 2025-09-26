@@ -1,9 +1,8 @@
 #!/bin/zsh
 
 SCRIPT_DIR="${0:A:h}"
-"${SCRIPT_DIR}/rerunnables"
 
-waybar &
+"${SCRIPT_DIR}/launch-waybar.sh" &
 swaybg -i ~/Documents/misc/wallpapers/current &
 
 mako --default-timeout=5000 &

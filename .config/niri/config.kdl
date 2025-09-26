@@ -124,7 +124,7 @@ layout {
     }
 }
 
-spawn-at-startup "zsh" "-c" "/home/saatvikl/.config/river/init"
+spawn-at-startup "zsh" "-c" "/home/saatvikl/scripts/init"
 
 // // Put swaybg inside the overview backdrop.
 // layer-rule {
