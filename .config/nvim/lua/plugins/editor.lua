@@ -105,42 +105,42 @@ return {
           end)
 
           -- Actions
-          map('n', '<leader>hs', gitsigns.stage_hunk)
-          map('n', '<leader>hr', gitsigns.reset_hunk)
+          map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "[H]unk [S]tage" })
+          map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "[H]unk [R]eset" })
 
           map('v', '<leader>hs', function()
             gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-          end)
+          end, { desc = "[H]unk [S]tage" })
 
           map('v', '<leader>hr', function()
             gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-          end)
+          end, { desc = "[H]unk [R]eset" })
 
-          map('n', '<leader>hS', gitsigns.stage_buffer)
-          map('n', '<leader>hR', gitsigns.reset_buffer)
-          map('n', '<leader>hp', gitsigns.preview_hunk)
-          map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+          map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "[H]unk [S]tage Buffer" })
+          map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "[H]unk [R]eset Buffer" })
+          map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "[H]unk [P]review" })
+          map('n', '<leader>hi', gitsigns.preview_hunk_inline, { desc = "[H]unk [I]nline Preview" })
 
           map('n', '<leader>hb', function()
             gitsigns.blame_line({ full = true })
-          end)
+          end, { desc = "[H]unk [B]lame" })
 
-          map('n', '<leader>hd', gitsigns.diffthis)
+          map('n', '<leader>hd', gitsigns.diffthis, { desc = "[H]unk [D]iff" })
 
           map('n', '<leader>hD', function()
             gitsigns.diffthis('~')
-          end)
+          end, { desc = "[H]unk [D]iff ~" })
 
-          map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
-          map('n', '<leader>hq', gitsigns.setqflist)
+          map('n', '<leader>hQ', function() gitsigns.setqflist('all') end, { desc = "[H]unk [Q]uickfix all" })
+          map('n', '<leader>hq', gitsigns.setqflist, { desc = "[H]unk [q]uickfix" })
 
           -- Toggles
-          map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-          map('n', '<leader>td', gitsigns.toggle_deleted)
-          map('n', '<leader>tw', gitsigns.toggle_word_diff)
+          map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = "[T]oggle [B]lame" })
+          map('n', '<leader>td', gitsigns.toggle_deleted, { desc = "[T]oggle [D]eleted" })
+          map('n', '<leader>tw', gitsigns.toggle_word_diff, { desc = "[T]oggle [W]ord Diff" })
 
           -- Text object
-          map({ 'o', 'x' }, 'ih', gitsigns.select_hunk)
+          map({ 'o', 'x' }, 'ih', gitsigns.select_hunk, { desc = "Select [H]unk" })
         end
       }
     end
