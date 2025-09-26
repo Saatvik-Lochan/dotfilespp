@@ -1,6 +1,10 @@
 return {
   {
-    "ggandor/leap.nvim"
+    "ggandor/leap.nvim",
+    depedencies = { 'tpope/repeat.vim' },
+    keys = {
+      { "s", '<Plug>(leap)', desc = "[s]hort leap forward", mode = { 'n', 'x', 'o' } },
+    },
   },
   {
     'ThePrimeagen/harpoon',
