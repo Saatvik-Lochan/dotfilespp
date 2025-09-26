@@ -1,5 +1,8 @@
 return {
   {
+    "ggandor/leap.nvim"
+  },
+  {
     'ThePrimeagen/harpoon',
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {

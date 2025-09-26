@@ -147,33 +147,6 @@ return {
   },
 
   {
-    "kevinhwang91/nvim-ufo",
-    enabled = false,
-    dependencies = { 'kevinhwang91/promise-async' },
-    keys = {
-      { "<C-l>",  "zo", desc = "Open fold" },
-      { "<C-h>",  "zc", desc = "Close fold" },
-      { "g<C-l>", "zO", desc = "Open all folds" },
-      { "g<C-h>", "zC", desc = "Close all fold" },
-    },
-    config = function()
-      vim.o.foldcolumn = '1' -- '0' is not bad
-      vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-
-      require('ufo').setup({
-        provider_selector = function(bufnr, filetype, buftype)
-          return { 'treesitter', 'indent' }
-        end
-      })
-
-      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-    end
-  },
-
-  {
     "debugloop/telescope-undo.nvim",
     dependencies = { -- note how they're inverted to above example
       {
