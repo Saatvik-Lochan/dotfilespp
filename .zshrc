@@ -119,3 +119,8 @@ bindkey -M vicmd -s 'H' '^'
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
 
+# pyenv
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
