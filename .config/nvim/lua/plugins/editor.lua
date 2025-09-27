@@ -6,9 +6,14 @@ return {
     opts = true
   },
   {
-      'Chaitanyabsprip/fastaction.nvim',
-      event = "VeryLazy",
-      opts = {},
+    'Chaitanyabsprip/fastaction.nvim',
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
+    'windwp/nvim-autopairs', -- just a better autopairs than the others
+    event = "InsertEnter",
+    config = true
   },
   {
     "echasnovski/mini.nvim",
@@ -54,7 +59,7 @@ return {
         }
       })
 
-      vim.keymap.set("n", "gh", ":Other<cr>", { desc = "Go to header" })
+      vim.keymap.set("n", "gh", ":Other<cr>", { desc = "Go to [h]eader" })
     end
   },
 
