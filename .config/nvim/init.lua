@@ -10,6 +10,10 @@ function MapKey(key, todo, desc, modes)
 	vim.keymap.set(modes, key, todo, opts)
 end
 
+if vim.g.neovide then
+  require('neovide')
+end
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
