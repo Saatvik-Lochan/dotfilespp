@@ -1,17 +1,10 @@
 return {
-  {
-    "sainnhe/gruvbox-material",
-    priority = 1000,
-    lazy = false,
-    config = function()
-      vim.cmd([[colorscheme gruvbox-material]])
-    end,
-  },
-  -- { "ellisonleao/gruvbox.nvim" },
-  -- { "EdenEast/nightfox.nvim" }, -- lazy
-  -- { "rebelot/kanagawa.nvim" },
-  -- { 'AlexvZyl/nordic.nvim',    config = function() require('nordic').load() end },
-  -- { "folke/tokyonight.nvim" },
+  { "sainnhe/gruvbox-material" },
+  { "ellisonleao/gruvbox.nvim", config = function() vim.cmd("colorscheme gruvbox") end },
+  { "EdenEast/nightfox.nvim" },
+  { "rebelot/kanagawa.nvim" },
+  { 'AlexvZyl/nordic.nvim' },
+  { "folke/tokyonight.nvim" },
   { -- requires deno
     "toppair/peek.nvim",
     event = { "VeryLazy" },
