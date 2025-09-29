@@ -86,6 +86,10 @@ layout {
 
     // You can change the default width of the new windows.
     default-column-width { proportion 0.5; }
+    tab-indicator {
+      place-within-column;
+      hide-when-single-tab;
+    }
 
     // You can change how the focus ring looks.
     focus-ring {
@@ -147,6 +151,14 @@ window-rule {
     open-floating true
 }
 
+window-rule {
+    match title="^fzfmenu$"
+    open-floating true
+    opacity 0.8
+    default-window-height { proportion 0.5; }
+    default-column-width { proportion 0.5; }
+}
+
 // Example: enable rounded corners for all windows.
 /-window-rule {
     geometry-corner-radius 12
@@ -190,8 +202,8 @@ binds {
     Alt+Up    { focus-window-up; }
     Alt+H     { focus-column-left; }
     Alt+L     { focus-column-right; }
-    Alt+J     { focus-window-or-workspace-down; }
-    Alt+K     { focus-window-or-workspace-up; }
+    Alt+J     { focus-window-down; }
+    Alt+K     { focus-window-up; }
 
     Alt+Ctrl+Left  { move-column-left; }
     Alt+Ctrl+Down  { move-window-down; }
