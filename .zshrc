@@ -10,6 +10,8 @@ if [ -z "$TMUX" ]; then
   fi
 fi
 
+alias home="cd $TMUX_SESSIIONIZER_DIR"
+
 unsetopt correct
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -36,6 +38,7 @@ alias ss="satty --copy-command wl-copy --early-exit"
 alias smpv="swayhide mpv"
 
 alias nin="nvim"
+alias vim="nvim"
 export SUDO_EDITOR="/usr/bin/nvim"
 
 alias ls="exa"
