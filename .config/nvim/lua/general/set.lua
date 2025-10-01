@@ -2,8 +2,11 @@ local set = vim.opt
 
 set.clipboard = "unnamedplus"
 
--- set.nu = true
+set.nu = true
 set.relativenumber = true
+
+set.tabstop = 2
+set.shiftwidth = 2
 
 set.smartindent = true
 set.autoindent = true
@@ -24,7 +27,16 @@ set.termguicolors = true
 set.scrolloff = 8
 set.isfname:append("@-@")
 
-set.updatetime = 50
+set.numberwidth = 3
 
--- set.colorcolumn = "80"
--- set.signcolumn = "number"
+-- performance
+set.updatetime = 50
+set.ttyfast = true
+
+set.synmaxcol = 200
+set.wrapscan = false
+set.writebackup = false
+
+set.timeoutlen = 300
+set.ttimeoutlen = 10
+set.modeline = false

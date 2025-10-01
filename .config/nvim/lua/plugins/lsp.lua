@@ -1,6 +1,7 @@
 return {
-  { 'kmonad/kmonad-vim' },
-  { 'https://github.com/calincru/flex-bison-syntax' },
+  -- separate syntax highlighting
+  { 'kmonad/kmonad-vim', enabled = false },
+  { 'https://github.com/calincru/flex-bison-syntax', enabled = false },
   {
     "nvim-treesitter/nvim-treesitter", build = ":TSUpdate"
   },

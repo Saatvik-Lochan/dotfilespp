@@ -1,5 +1,44 @@
 return {
   {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      bigfile = { enabled = true },
+      input = { enabled = true },
+      -- indent = { enabled = true }, -- handy, but it's a but cluttery
+    },
+  },
+  {
+    "luukvbaal/statuscol.nvim",
+    dependencies = {
+      "lewis6991/gitsigns.nvim"
+    },
+    config = function()
+      local builtin = require("statuscol.builtin")
+      require("statuscol").setup({
+        relculright = true,
+        segments = {
+          {
+            text = { builtin.lnumfunc },
+            condition = { true, builtin.not_empty },
+            click = "v:lua.ScLa"
+          },
+          {
+            sign = {
+              namespace = { "diagnostic/signs", "gitsigns", },
+              maxwidth = 1,
+              colwidth = 1,
+              auto = true,
+              wrap = false,
+              fillchar = " ",
+            },
+          },
+        },
+      })
+    end,
+  },
+  {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
@@ -82,6 +121,7 @@ return {
       -- ripped straight from the github README
       -- where did the 'MINIMAL' in nvim-minimal go?
       require('gitsigns').setup {
+        -- signcolumn = false,
         on_attach = function(bufnr)
           local gitsigns = require('gitsigns')
 

@@ -3,6 +3,7 @@
 ## Short Tweaks
 - Bind something to closing all windows but the current one
 - Fix quick fix list forward and backward?
+- get the diagnostics to work in the status line...
 
 ## Interesting
 - ...
