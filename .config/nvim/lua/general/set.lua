@@ -2,7 +2,6 @@ local set = vim.opt
 
 set.clipboard = "unnamedplus"
 
-set.nu = true
 set.relativenumber = true
 
 set.tabstop = 2
@@ -27,7 +26,7 @@ set.termguicolors = true
 set.scrolloff = 8
 set.isfname:append("@-@")
 
-set.numberwidth = 3
+set.numberwidth = 2
 
 -- performance
 set.updatetime = 50

@@ -20,19 +20,19 @@ return {
         relculright = true,
         segments = {
           {
-            text = { builtin.lnumfunc },
-            condition = { true, builtin.not_empty },
-            click = "v:lua.ScLa"
-          },
-          {
             sign = {
-              namespace = { "diagnostic/signs", "gitsigns", },
+              namespace = { "gitsigns", },
               maxwidth = 1,
               colwidth = 1,
               auto = true,
               wrap = false,
               fillchar = " ",
             },
+          },
+          {
+            text = { builtin.lnumfunc, " " },
+            condition = { true, builtin.not_empty },
+            click = "v:lua.ScLa"
           },
         },
       })
