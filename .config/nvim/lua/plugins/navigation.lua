@@ -10,7 +10,7 @@ return {
     'ThePrimeagen/harpoon',
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {
-      { "<leader>a",     function() require('harpoon.mark').add_file() end,        desc = "[a]dd file" },
+      { "<leader>a",     function() require('harpoon.mark').add_file() end,        desc = "Open harboon UI" },
       { "<leader><Tab>", function() require('harpoon.ui').toggle_quick_menu() end, desc = "[a]dd file" },
       { "<leader>1",     function() require('harpoon.ui').nav_file(1) end,         desc = "Goto File [1]" },
       { "<leader>2",     function() require('harpoon.ui').nav_file(2) end,         desc = "Goto File [2]" },
