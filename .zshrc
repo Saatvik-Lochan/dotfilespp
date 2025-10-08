@@ -105,7 +105,6 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 HYPHEN_INSENSITIVE="true"
 zstyle ':omz:update' mode auto      # update automatically without asking
-ENABLE_CORRECTION="true"
 
 plugins=(git fzf zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode)
 source $ZSH/oh-my-zsh.sh
