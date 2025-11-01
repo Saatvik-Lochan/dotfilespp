@@ -8,6 +8,7 @@ pdf=$(fd --no-ignore -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmen
 name=$(basename "$pdf")
 
 if [ -z "$name" ]; then 
+  notify-send "cancelling open-zathura" 
   exit; 
 fi
 

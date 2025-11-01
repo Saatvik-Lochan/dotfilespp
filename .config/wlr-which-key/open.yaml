@@ -32,6 +32,9 @@ menu:
   - key: "b"
     desc: Bluetooth
     cmd: blueman-manager
+  - key: "m"
+    desc: Monitor Settings
+    cmd: wdisplays
   - key: "a"
     desc: Audio
     cmd: pavucontrol
@@ -41,6 +44,9 @@ menu:
   - key: "d"
     desc: Discord
     cmd: discord
+  - key: "c"
+    desc: comms (slack)
+    cmd: slack
   - key: "s"
     desc: Spotify
     cmd: spotify

@@ -66,7 +66,7 @@ output "eDP-1" {
     position x=0 y=1080
 }
 
-output "DP-6" {
+output "DP-7" {
     mode "1920x1080@60.000"
     scale 1
     transform "normal"

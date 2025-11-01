@@ -16,6 +16,7 @@ return {
       vim.lsp.enable('rust_analyzer')
       vim.lsp.enable('pyright')
       vim.lsp.enable('lua_ls')
+      vim.lsp.enable('clangd')
 
       -- Use LspAttach autocommand to only map the following keys
       -- after the language server attaches to the current buffer

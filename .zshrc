@@ -37,6 +37,10 @@ alias vim="NVIM_APPNAME=nvim-minimal nvim"
 alias ss="satty --copy-command wl-copy --early-exit"
 alias smpv="swayhide mpv"
 
+ha() {
+    fortune | cowsay -f "$( ls /usr/share/cowsay/cows | sort -R | head -n 1 )"
+}
+
 alias nin="nvim"
 alias vim="nvim"
 export SUDO_EDITOR="/usr/bin/nvim"
