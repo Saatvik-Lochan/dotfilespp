@@ -14,13 +14,7 @@ return {
 
     config = function()
       vim.lsp.enable('rust_analyzer')
-      vim.lsp.config('pyright', {
-        settings = {
-          pyright = { disableOrganizeImports = true },
-          python = { analysis = { ignore = { '*' } } },
-        },
-      })
-      vim.lsp.enable('pyright')
+      vim.lsp.enable('ty')
       vim.lsp.enable('ruff')
       vim.lsp.enable('lua_ls')
       vim.lsp.enable('clangd')
