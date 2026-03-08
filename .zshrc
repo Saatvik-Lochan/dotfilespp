@@ -36,6 +36,8 @@ alias n="nvim"
 alias vim="NVIM_APPNAME=nvim-minimal nvim"
 alias ss="satty --copy-command wl-copy --early-exit"
 alias smpv="swayhide mpv"
+alias :w="echo '🤡 <-- you'"
+alias mvd="~/scripts/move-from-downloads.sh"
 
 ha() {
     fortune | cowsay -f "$( ls /usr/share/cowsay/cows | sort -R | head -n 1 )"
@@ -44,6 +46,7 @@ ha() {
 alias nin="nvim"
 alias vim="nvim"
 export SUDO_EDITOR="/usr/bin/nvim"
+export EDITOR="/usr/bin/nvim"
 
 alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."
@@ -130,3 +133,5 @@ export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
+alias loadconda="source /opt/anaconda/etc/profile.d/conda.sh"

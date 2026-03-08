@@ -26,6 +26,10 @@ MapKey('H', '0zs^', "Super left", { 'n', 'v', 'o' })
 MapKey('L', '$', "Super right", { 'n', 'v', 'o' })
 MapKey('<leader>`', ':b#<cr>', "Toggle previous file")
 
+-- Interesting (insert mode)
+MapKey('<C-h>', '<Left>', "Left", { "i" })
+MapKey('<C-l>', '<Right>', "Right", { "i" })
+
 -- New
 MapKey('<leader>w', '<c-w>w', "Next window")
 MapKey('go', 'gd', "GO to definition (hurts my hand to type gd)")

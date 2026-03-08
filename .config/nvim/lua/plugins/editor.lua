@@ -94,6 +94,22 @@ return {
           {
             pattern = "/include/(.*).hpp",
             target = "/src/%1.cpp"
+          },
+          {
+            pattern = "/src/(.*).cc",
+            target = "/include/%1.h"
+          },
+          {
+            pattern = "/include/(.*).h",
+            target = "/src/%1.cc"
+          },
+          {
+            pattern = "(.*).cpp",
+            target = "%1.h"
+          },
+          {
+            pattern = "(.*).h",
+            target = "%1.cpp"
           }
         }
       })
