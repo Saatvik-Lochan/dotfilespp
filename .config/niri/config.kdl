@@ -173,7 +173,7 @@ window-rule {
 }
 
 // Example: enable rounded corners for all windows.
-/-window-rule {
+window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
 }
