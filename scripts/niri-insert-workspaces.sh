@@ -36,17 +36,16 @@ if [ "$WINDOW_COUNT" -eq 1 ]; then
     fi
     niri msg action move-column-to-workspace-"$DIRECTION"
 else
-    # Multiple windows: insert a new workspace and move the column there
+    # Multiple windows: insert a new workspace and move the column there.
+    # Use --focus false so all repositioning happens in the background,
+    # then jump to the final position in one clean transition.
     if [ "$DIRECTION" = "down" ]; then
-        MOVES=$(( TOTAL - FOCUSED_WS_IDX - 1 ))
+        TARGET=$(( FOCUSED_WS_IDX + 1 ))
     else
-        MOVES=$(( TOTAL - FOCUSED_WS_IDX ))
+        TARGET=$(( FOCUSED_WS_IDX ))
     fi
 
-    niri msg action move-column-to-workspace "$TOTAL"
-    niri msg action focus-workspace "$TOTAL"
-
-    for (( i = 0; i < MOVES; i++ )); do
-        niri msg action move-workspace-up
-    done
+    niri msg action move-column-to-workspace "$TOTAL" --focus false
+    niri msg action move-workspace-to-index "$TARGET" --reference "$TOTAL"
+    niri msg action focus-workspace "$TARGET"
 fi
