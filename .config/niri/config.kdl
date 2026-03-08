@@ -51,6 +51,10 @@ input {
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
     focus-follows-mouse max-scroll-amount="0%"
 }
+debug {
+  // jump to urgent windows (i.e. when I click on a link)
+  honor-xdg-activation-with-invalid-serial
+} 
 
 gestures {
   hot-corners {
@@ -85,7 +89,7 @@ output "HDMI-A-1" {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 2
+    gaps 10
     center-focused-column "never"
     preset-column-widths {
         proportion 0.5
@@ -364,7 +368,7 @@ binds {
     // Expel the bottom window from the focused column to the right.
     Alt+Period { expel-window-from-column; }
 
-    Alt+R { switch-preset-column-width; }
+    Alt+R { set-column-width "50%"; }
     Alt+Shift+R { switch-preset-window-height; }
     Alt+Ctrl+R { reset-window-height; }
 
