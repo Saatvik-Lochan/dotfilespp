@@ -224,8 +224,8 @@ binds {
     Alt+Ctrl+Right { move-column-right; }
     Alt+Ctrl+H     { move-column-left; }
     Alt+Ctrl+L     { move-column-right; }
-    Alt+Ctrl+J     { move-window-down-or-to-workspace-down; }
-    Alt+Ctrl+K     { move-window-up-or-to-workspace-up; }
+    Alt+Ctrl+J     { spawn "~/scripts/niri-insert-workspaces.sh" "--down"; }
+    Alt+Ctrl+K     { spawn "~/scripts/niri-insert-workspaces.sh" "--up"; }
 
     // Alternative commands that move across workspaces when reaching
     // the first or last window in a column.
