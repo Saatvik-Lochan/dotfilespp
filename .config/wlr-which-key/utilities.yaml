@@ -29,3 +29,9 @@ menu:
   - key: "w"
     desc: Wallpaper
     cmd: ~/scripts/change-wallpaper.sh
+  - key: "r"
+    desc: Random Wallpaper
+    cmd: ~/scripts/random-wallpaper.sh
+  - key: "s"
+    desc: Save Wallpaper
+    cmd: ~/scripts/save-current-wallpaper.py

@@ -1,0 +1,12 @@
+include colors
+set selection-clipboard clipboard
+
+# Just some other stuff
+map <Space> navigate next
+map <C-Space> navigate previous
+map <S-Space> navigate previous
+map <Right> navigate next
+map <Left> navigate previous
+
+map <Button4> navigate next
+map <Button5> navigate previous

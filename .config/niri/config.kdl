@@ -107,11 +107,8 @@ layout {
     // You can change how the focus ring looks.
     focus-ring {
         // How many logical pixels the ring extends out from the windows.
-        width 2
-        // Color of the ring on the active monitor.
-        active-color "#7fc8ff"
-        // Color of the ring on inactive monitors.
-        inactive-color "#505050"
+        width 3
+        // color set in colors.kdl
     }
 
     // You can also add a border. It's similar to the focus ring, but always visible.
@@ -132,7 +129,7 @@ layout {
     shadow {
         // Softness controls the shadow blur radius.
         softness 30
-        spread 5
+        spread 10
         offset x=0 y=5
         color "#0007"
     }
@@ -141,6 +138,7 @@ layout {
     }
 }
 
+include "colors.kdl"
 spawn-at-startup "zsh" "-c" "/home/saatvikl/scripts/init"
 
 // // Put swaybg inside the overview backdrop.
@@ -156,6 +154,12 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 animations {
     // off
     slowdown 0.25
+}
+
+window-rule {
+  open-maximized false
+  open-fullscreen false
+  open-maximized-to-edges false
 }
 
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
@@ -376,7 +380,8 @@ binds {
     Alt+F { maximize-window-to-edges; }
     Alt+Shift+F { fullscreen-window; }
     Alt+Ctrl+F { maximize-column; }
-    Alt+Shift+Ctrl+F { toggle-windowed-fullscreen; }
+    // B for borderless (nice to get rid of head of browser)
+    Alt+B { toggle-windowed-fullscreen; }
 
     Alt+E { center-column; }
 

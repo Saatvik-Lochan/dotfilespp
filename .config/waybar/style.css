@@ -1,4 +1,5 @@
 /* Keyframes */
+@import url("./colors.css");
 
 @keyframes blink-critical {
 	to {
@@ -35,10 +36,6 @@
 @define-color whitebeard #888c89;
 
 /* Base colours */
-@define-color bright @whitebeard;
-@define-color dark @bg2;
-@define-color textcolour @white;
-
 @define-color inactive	@gray;
 @define-color unfocused	@dark;
 @define-color focused	@bright;
