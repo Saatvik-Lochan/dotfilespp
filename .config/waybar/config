@@ -162,10 +162,15 @@
 		//"spacing": 10
 	},
 
-        "custom/clockify": {
-          "exec": "way-clockify --poll-interval=30s",
-          "on-click": "kill -usr2 $(pgrep -x way-clockify)"
-        },
+  "custom/clockify": {
+    "exec": "way-clockify --poll-interval=30s",
+    "on-click": "kill -usr2 $(pgrep -x way-clockify)"
+  },
+
+  "custom/todaytime": {
+    "exec": "echo 'hi'",
+    "interval": 60
+  },
 
 	"custom/arrow1": {
 		"format": "",
@@ -213,6 +218,11 @@
 	},
 
 	"custom/clockifyarrow": {
+		"format": "",
+		"tooltip": false
+	},
+
+	"custom/todaytimearrow": {
 		"format": "",
 		"tooltip": false
 	},

@@ -152,14 +152,15 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
 animations {
-    // off
-    slowdown 0.25
+    off
+    // slowdown 0.25
 }
 
 window-rule {
   open-maximized false
   open-fullscreen false
   open-maximized-to-edges false
+  default-column-width { proportion 0.5; }
 }
 
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
@@ -243,8 +244,8 @@ binds {
     Alt+Ctrl+Home { move-column-to-first; }
     Alt+Ctrl+End  { move-column-to-last; }
 
-    Alt+Shift+H     { focus-column-first; }
-    Alt+Shift+L     { focus-column-last; }
+    // Alt+Shift+H     { focus-column-first; }
+    // Alt+Shift+L     { focus-column-last; }
     Alt+Ctrl+Shift+H     { move-column-to-first; }
     Alt+Ctrl+Shift+L     { move-column-to-last; }
 
@@ -383,7 +384,11 @@ binds {
     // B for borderless (nice to get rid of head of browser)
     Alt+B { toggle-windowed-fullscreen; }
 
-    Alt+E { center-column; }
+    // scroll peak
+    Alt+Shift+L { spawn "~/scripts/niri-scroll-peek.sh" "--left"; }
+    Alt+Shift+H { spawn "~/scripts/niri-scroll-peek.sh" "--right"; }
+
+    Alt+Space { spawn "~/scripts/toggle-kbd.sh"; }
 
     // Center all fully visible columns on screen.
     // Alt+Shift+C { center-visible-columns; }

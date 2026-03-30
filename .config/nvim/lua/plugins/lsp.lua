@@ -18,6 +18,7 @@ return {
       vim.lsp.enable('ruff')
       vim.lsp.enable('lua_ls')
       vim.lsp.enable('clangd')
+      vim.lsp.enable('bashls')
 
       -- Use LspAttach autocommand to only map the following keys
       -- after the language server attaches to the current buffer

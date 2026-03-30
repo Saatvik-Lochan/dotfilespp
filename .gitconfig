@@ -8,3 +8,7 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+[safe]
+	directory = /home/saatvikl/sshfs_mounts/gpu5
+[init]
+	defaultBranch = main

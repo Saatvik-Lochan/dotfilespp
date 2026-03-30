@@ -8,9 +8,10 @@ dirs() {
 
 singles() {
     echo ~/dotfiles
-    echo ~/sshfs_mounts
+    echo ~/mounts
     echo ~/Documents
     echo ~/Downloads
+    echo ~/shows
     echo ~/ArchivedDownloads
     echo ~/repos
     echo ~/scripts

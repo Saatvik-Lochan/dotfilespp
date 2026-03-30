@@ -105,6 +105,31 @@ func parseFlexibleDuration(s string) (time.Duration, error) {
 }
 
 func poll() (time.Duration, error) {
+	activeOut, err := exec.Command("timew", "get", "dom.active").Output()
+	if err != nil {
+		return 0, err
+	}
+	if strings.TrimSpace(string(activeOut)) != "1" {
+		return 0, fmt.Errorf("no active time tracking")
+	}
+	startOut, err := exec.Command("timew", "get", "dom.active.start").Output()
+	if err != nil {
+		return 0, err
+	}
+	startStr := strings.TrimSpace(string(startOut))
+	// Timewarrior returns e.g. "2026-03-25T11:03:43"
+	start, err := time.ParseInLocation("2006-01-02T15:04:05", startStr, time.Local)
+	if err != nil {
+		// fallback if format has timezone in your setup
+		start, err = time.Parse(time.RFC3339, startStr)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return time.Since(start).Round(time.Second), nil
+}
+
+func poll_clockify() (time.Duration, error) {
 	// cmd := exec.Command("bash", "-c", `
 	// 	swaymsg -t get_tree | jq -r '
 	// 	  first(recurse(.nodes[]?, .floating_nodes[]?)

@@ -8,5 +8,8 @@ map <S-Space> navigate previous
 map <Right> navigate next
 map <Left> navigate previous
 
+map <C-e> navigate down
+map <C-y> navigate up
+
 map <Button4> navigate next
 map <Button5> navigate previous

@@ -18,20 +18,7 @@ if [ -n "${1:-}" ]; then
     exit 1
   fi
 
-  chosen_full_file="$(realpath "$1")"
-  chosen="$(basename "$chosen_full_file")"
-  wallpaper_file="$BASE_WALLPAPER_DIR/$chosen"
-
-  # Avoid replacing existing tracked wallpapers with a different source.
-  if [ -e "$wallpaper_file" ] || [ -L "$wallpaper_file" ]; then
-    existing_target="$(realpath "$wallpaper_file" 2>/dev/null || true)"
-    if [ "$existing_target" != "$chosen_full_file" ]; then
-      notify-send "name exists with different file: $chosen"
-      exit 1
-    fi
-  fi
-
-  ln -s -f "$chosen_full_file" "$wallpaper_file"
+  wallpaper_file="$(realpath "$1")"
 else
   wallpaper_file="$(fd --no-ignore --type f --type l -E current . "$BASE_WALLPAPER_DIR" | fzfmenu)"
 
