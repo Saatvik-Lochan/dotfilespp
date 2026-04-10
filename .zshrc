@@ -135,3 +135,7 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 alias loadconda="source /opt/anaconda/etc/profile.d/conda.sh"
+
+. "$HOME/.atuin/bin/env"
+
+zvm_after_init_commands+=(eval "$(atuin init zsh)")

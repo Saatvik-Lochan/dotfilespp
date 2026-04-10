@@ -56,6 +56,10 @@ debug {
   honor-xdg-activation-with-invalid-serial
 } 
 
+hotkey-overlay {
+  skip-at-startup
+}
+
 gestures {
   hot-corners {
     off
@@ -388,7 +392,7 @@ binds {
     Alt+Shift+L { spawn "~/scripts/niri-scroll-peek.sh" "--left"; }
     Alt+Shift+H { spawn "~/scripts/niri-scroll-peek.sh" "--right"; }
 
-    Alt+Space { spawn "~/scripts/toggle-kbd.sh"; }
+    XF86Favorites { spawn "~/scripts/toggle-kbd.sh"; }
 
     // Center all fully visible columns on screen.
     // Alt+Shift+C { center-visible-columns; }
