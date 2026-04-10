@@ -23,9 +23,12 @@ margin_top: 0
 inhibit_compositor_keyboard_shortcuts: true
 
 menu:
+  - key: "l"
+    desc: Lock
+    cmd: swaylock --screenshots --clock --effect-blur 7x5
   - key: "s"
     desc: Sleep
-    cmd: systemctl suspend
+    cmd: swaylock --screenshots --clock --effect-blur 7x5 & sleep 1; systemctl suspend
   - key: "r"
     desc: Reboot
     cmd: systemctl reboot
