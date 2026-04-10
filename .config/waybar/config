@@ -5,12 +5,12 @@
 	"modules-left": [
 		"niri/workspaces",
 		"custom/arrow10",
-		"niri/window"
+		"custom/niri-overview"
 	],
 
 	"modules-right": [
-                "custom/clockifyarrow",
-                "custom/clockify",
+    "custom/clockifyarrow",
+    "custom/clockify",
 		"custom/arrow9",
 		"pulseaudio",
 		"custom/arrow8",
@@ -30,6 +30,13 @@
 		"custom/arrow1",
 		"clock#time",
 	],
+
+  // My Modules
+  "custom/niri-overview": {
+    "exec": "~/scripts/niri-workspace-overview.sh",
+    "return-type": "text",
+    "format": "{}"
+  },
 
 	// Modules
 
