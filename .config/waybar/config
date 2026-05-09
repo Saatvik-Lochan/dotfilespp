@@ -1,5 +1,6 @@
 {
 	"layer": "top",
+  "output": "eDP-1",
 	"position": "top", // top | bottom
 
 	"modules-left": [
@@ -9,6 +10,8 @@
 	],
 
 	"modules-right": [
+    "custom/spotifyarrow",
+    "custom/spotify",
     "custom/clockifyarrow",
     "custom/clockify",
 		"custom/arrow9",
@@ -35,7 +38,17 @@
   "custom/niri-overview": {
     "exec": "~/scripts/niri-workspace-overview.sh",
     "return-type": "text",
-    "format": "{}"
+    "format": "{}",
+    "max-length": 300
+  },
+
+  "custom/spotify": {
+      "exec": "/usr/bin/python3 ~/.config/waybar/mediaplayer.py --player spotify",
+      "format": "{} ",
+      "return-type": "json",
+      "on-click": "playerctl play-pause",
+      "on-scroll-up": "playerctl next",
+      "on-scroll-down": "playerctl previous"
   },
 
 	// Modules
@@ -225,6 +238,11 @@
 	},
 
 	"custom/clockifyarrow": {
+		"format": "",
+		"tooltip": false
+	},
+
+	"custom/spotifyarrow": {
 		"format": "",
 		"tooltip": false
 	},

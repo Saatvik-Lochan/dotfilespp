@@ -33,7 +33,7 @@ fi
 
 ln -s -f "$wallpaper_file" "$CURRENT_WALLPAPER_LINK"
 
-swww img -t grow "$CURRENT_WALLPAPER_LINK"
+awww img -t grow "$CURRENT_WALLPAPER_LINK"
 
 # update the theming
 wallust run -s "$CURRENT_WALLPAPER_LINK"

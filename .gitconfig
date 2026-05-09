@@ -10,5 +10,7 @@
 	clean = git-lfs clean -- %f
 [safe]
 	directory = /home/saatvikl/sshfs_mounts/gpu5
+	directory = /home/saatvikl/mounts/gpu1/act-artifact-internal
+	directory = /home/saatvikl/mounts/gpu4/cs-444
 [init]
 	defaultBranch = main

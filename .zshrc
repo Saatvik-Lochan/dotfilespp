@@ -10,7 +10,7 @@ if [ -z "$TMUX" ]; then
   fi
 fi
 
-alias home="cd $TMUX_SESSIIONIZER_DIR"
+alias home="cd $TMUX_SESSIONIZER_DIR"
 
 unsetopt correct
 
@@ -24,7 +24,7 @@ bindkey "^N" down-line-or-search
 #
 
 # Aliases
-alias e='emacsclient -nca ""'
+alias e="emacs --init-directory ~/.config/emacs-minimal"
 alias gadd="git add ."
 alias ginit="git init ."
 alias gs="git status"
@@ -39,6 +39,26 @@ alias smpv="swayhide mpv"
 alias :w="echo '🤡 <-- you'"
 alias mvd="~/scripts/move-from-downloads.sh"
 
+bookpls() {
+ if [ "$#" -eq 0 ]; then
+   command bookpls "$HOME/Downloads/books" "usogui"
+ else
+   command bookpls "$@"
+ fi
+}
+
+# If a line starts with :, turn it into a pi prompt
+pi_colon_accept_line() {
+  emulate -L zsh
+  if [[ $BUFFER == :* ]]; then
+    local prompt="${BUFFER#:}"
+    BUFFER="pi --no-tools -p ${(qqq)prompt}"
+  fi
+  zle .accept-line
+}
+
+zle -N accept-line pi_colon_accept_line
+
 ha() {
     fortune | cowsay -f "$( ls /usr/share/cowsay/cows | sort -R | head -n 1 )"
 }
@@ -47,6 +67,12 @@ alias nin="nvim"
 alias vim="nvim"
 export SUDO_EDITOR="/usr/bin/nvim"
 export EDITOR="/usr/bin/nvim"
+
+# Use a tmux split external editor for pi only, so Ctrl+G doesn't hide the chat.
+export PI_VISUAL="$HOME/.local/bin/pi-editor"
+pi() {
+    VISUAL="$PI_VISUAL" command pi "$@"
+}
 
 alias ls="exa"
 alias s="cd ~/.config/sway && nvim ."
@@ -139,3 +165,9 @@ alias loadconda="source /opt/anaconda/etc/profile.d/conda.sh"
 . "$HOME/.atuin/bin/env"
 
 zvm_after_init_commands+=(eval "$(atuin init zsh)")
+
+# Added by Feynman installer
+export PATH="/home/saatvikl/.local/bin:$PATH"
+
+# User-global npm installs (for pi and npm -g)
+export PATH="$HOME/.npm-global/bin:$PATH"

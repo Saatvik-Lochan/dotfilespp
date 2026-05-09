@@ -15,6 +15,7 @@
 (map! :i "C-s" 'evil-normal-state)
 (map! :o "C-s" 'evil-normal-state)
 (map! :n "C-s" 'evil-force-normal-state)
+(add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "C-c") #'abort-recursive-edit)))
 
 (defun evil-org-latex-preview ()
   "A hack to run org-latex-preview in normal mode."
@@ -24,8 +25,11 @@
   (evil-normal-state)
   (evil-forward-char 1))
 
-(after! 'org
-  '(defun org-latex-preview (evil-org-latex-preview)))
+(after! org
+  (defun org-latex-preview ()
+    (interactive)
+    (evil-org-latex-preview))
+  (ultra-scroll-mode 1))
 
 ;; (add-hook 'org-mode-hook 'org-fragtog-mode)
 
@@ -38,15 +42,17 @@
 (map! :n "C-j" 'org-forward-element)
 (map! :n "C-l" 'org-down-element)
 
-(map! :leader :g "t h" '+tmux/cd-to-here)
-(map! :leader :g "t p" '+tmux/cd-to-project)
+(map! :n "C-e" 'evil-scroll-line-down)
+(map! :n "C-y" 'evil-scroll-line-up)
+(map! :n "C-e" (lambda () (interactive) (evil-scroll-line-down 3)))
+(map! :n "C-y" (lambda () (interactive) (evil-scroll-line-up 3)))
 
-(map! :leader :g "o n" 'org-noter)
-(map! :leader :g "i n" 'org-noter-insert-note)
+;; (map! :leader :n "c X" 'flycheck-explain-error-at-point)
 
-(map! :leader :n "c X" 'flycheck-explain-error-at-point)
-
-(setq-default projectile-project-search-path '("~/Documents/studies/comp_const"))
+(after! projectile
+  (setq projectile-project-search-path
+        '(("~/Documents/studies/" . 2)
+          "~/Documents/research/")))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -77,7 +83,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'visual)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -124,20 +130,18 @@
 (setq-default
  delete-by-moving-to-trash t
  window-combination-resize t
- x-stretch-cursor t
- org-noter-always-create-frame nil)
+ x-stretch-cursor t)
 
 (setq
  auto-save-default t
- truncate-string-ellipsis "…"
- scroll-margin 3)
+ truncate-string-ellipsis "…")
 
 ;; change the word to include the underscore
-(global-superword-mode t)
-(with-eval-after-load 'evil
-  (defalias #'forward-evil-word #'forward-evil-symbol)
-  ;; make evil-search-word look for symbol rather than word boundaries
-  (setq-default evil-symbol-word-search t))
+;; (global-superword-mode t)
+;; (with-eval-after-load 'evil
+;;   (defalias #'forward-evil-word #'forward-evil-symbol)
+;;   ;; make evil-search-word look for symbol rather than word boundaries
+;;   (setq-default evil-symbol-word-search t))
 
 ;; make custom file do stuff
 ;; (setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
@@ -151,12 +155,13 @@
 (setq-default org-download-image-dir "./.img")
 (setq-default org-download-link-format "[[./.img/%s]]\n")
 
-(with-eval-after-load "smartparens" '(sp-pair "\[", "\]"))
+;; (with-eval-after-load "smartparens" '(sp-pair "\[", "\]"))
 
+;; Zathura Stuff, very cool
 (defun org-insert-current-zathura ()
   "Inserts the current zathura page as a link"
   (interactive)
-  (let ((file (shell-command-to-string "/home/saatvikl/.config/sway/scripts/pdf-filename.sh select")))
+  (let ((file (shell-command-to-string "~/.config/sway/scripts/pdf-filename.sh select")))
     (if (string-empty-p file)
         (message "There are no pdfs open in zathura")
       (insert (format "[[zathura:%s][%s]]" file (read-string "link name: " file))))))
@@ -192,32 +197,10 @@
 
 ;; (add-hook 'org-mode-hook #'vi-tilde-fringe-mode)
 
-(map! :leader :n "t d" #'darkroom-mode)
-(map! :leader :n "t L" #'display-line-numbers-mode)
-
-(setq org-latex-listings 'minted)
+(setq org-latex-src-backend 'minted)
 (setq org-latex-compiler "xelatex")
-(setq org-latex-packages-alist '(("outputdir=./build" "minted" nil)))
-(setq org-latex-pdf-process '("mkdir -p build"
-                              "latexmk -f -pdf -xelatex -shell-escape -interaction=nonstopmode -output-directory=%o/build %f"
-                              "mv %o/build/%b.pdf %O"))
 
 (setq org-export-allow-bind-keyword t)
-(setq org-latex-special-block-alist
-      '((aside    "\\begin{asidebox}" "\\end{asidebox}" nil)
-        (solution "\\begin{solution}" "\\end{solution}" nil)
-        (sources  "\\begin{Sources}"  "\\end{Sources}"  nil)))
-
-(setq org-cite-export-processors
-      '((latex biblatex)
-        (t csl)))
-
-(use-package! citar
-  :after org
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar))
 
 ;; Transparent Background
 ;; (set-frame-parameter nil 'alpha-background 80)
@@ -231,4 +214,17 @@
    ))
 
 (setq company-idle-delay nil)
-(global-display-line-numbers-mode 0)
+;; (global-display-line-numbers-mode 0)
+;; 
+(defun show-projects ()
+  (interactive)
+  (switch-to-buffer "*projects*")
+  (org-mode)
+  (insert "#+TITLE: Projects\n\n")
+  (dolist (project (projectile-relevant-known-projects))
+    (insert (concat " [[" project "]] " "\n")))
+  (goto-char (point-min)))
+
+;; ROAM
+(setq org-roam-directory (file-truename "~/Documents/roam"))
+(org-roam-db-autosync-mode)

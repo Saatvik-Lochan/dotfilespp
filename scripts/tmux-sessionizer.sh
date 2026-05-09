@@ -25,6 +25,8 @@ projects() {
      dirs 1 ~/repos ~/.config & \
      dirs 2 ~/Documents
      dirs 3 ~/Documents
+     dirs 1 ~/mounts
+     dirs 2 ~/mounts
    } 
 }
 
@@ -50,7 +52,7 @@ fi
 
 if ! tmux has-session -t=$selected_name 2> /dev/null; then
     tmux new-session -ds $selected_name -c $selected \
-      -e "TMUX_SESSIIONIZER_DIR=$selected"
+      -e "TMUX_SESSIONIZER_DIR=$selected"
 fi
 
 tmux switch-client -t $selected_name

@@ -34,6 +34,13 @@ sub run_cmd {
 sub process_firefox {
     my ($data) = @_;
 
+    my @direct_handlers = qw(
+        Outlook
+        YouTube
+        WhatsApp
+        Claude
+    );
+
     my @site_handlers = (
         {
             match => qr/\[PDF\] Online LaTeX Editor Overleaf/,
@@ -57,7 +64,13 @@ sub process_firefox {
         return " " . $site_handler->{label};
     }
 
-    return "" . "firefox";
+    for my $name (@direct_handlers) {
+        next unless $title =~ /\Q$name\E/;
+
+        return ' ' . lc $name;
+    }
+
+    return " firefox";
 }
 
 sub process_zathura {
@@ -86,6 +99,12 @@ sub process_spotify {
     my ($data) = @_;
 
     return '󰎆 spotify';
+}
+
+sub process_slack {
+    my ($data) = @_;
+
+    return '󰒱 slack';
 }
 
 sub process_kitty {
@@ -147,6 +166,12 @@ sub process_kitty {
     return "$KITTY_ICON kitty";
 }
 
+sub process_ghostty {
+    my ($data) = @_;
+
+    return " ghostty";
+}
+
 sub process_json {
     my ($data) = @_;
 
@@ -154,10 +179,12 @@ sub process_json {
 
     my %handlers = (
         Emacs              => \&process_emacs,
+        Slack              => \&process_slack,
         firefox            => \&process_firefox,
         kitty              => \&process_kitty,
         Spotify            => \&process_spotify,
         'org.pwmt.zathura' => \&process_zathura,
+        'com.mitchellh.ghostty' => \&process_ghostty,
     );
 
     my $app_id = $data->{app_id} // '';

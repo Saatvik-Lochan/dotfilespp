@@ -45,6 +45,7 @@
 
 @define-color mode	@bright;
 
+@define-color spotify	@bright;
 @define-color clockify	@dark;
 @define-color sound	@bright;
 @define-color network	@dark;
@@ -176,6 +177,13 @@
         color: @textcolour
 }
 
+#custom-spotify {
+        padding-left: 8pt;
+        padding-right: 8pt;
+        background: @spotify;
+        color: @textcolour
+}
+
 #pulseaudio {
 	background: @sound;
 	color: @textcolour;
@@ -277,8 +285,15 @@
 #custom-clockifyarrow {
 	font-size: 11pt;
 	color: @clockify;
+	background: @spotify;
+}
+
+#custom-spotifyarrow {
+	font-size: 11pt;
+	color: @spotify;
 	background: transparent;
 }
+
 
 #custom-arrow10 {
 	font-size: 11pt;

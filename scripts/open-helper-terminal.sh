@@ -29,5 +29,5 @@ new_session=$(increment_string $current_session)
 exec tmux new \
   -s "$new_session" \
   -c "$current_path" \
-  -e "TMUX_SESSIIONIZER_DIR=$current_path"
+  -e "TMUX_SESSIONIZER_DIR=$current_path"
 

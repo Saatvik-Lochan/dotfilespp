@@ -160,3 +160,6 @@ unset __conda_setup
 
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
+
+# User-global npm installs (for pi and npm -g)
+export PATH="$HOME/.npm-global/bin:$PATH"

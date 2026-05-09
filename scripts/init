@@ -4,8 +4,8 @@ SCRIPT_DIR="${0:A:h}"
 
 "${SCRIPT_DIR}/launch-waybar.sh" &
 
-swww-daemon &
-swww img ~/Documents/misc/wallpapers/current &
+awww-daemon &
+awww img ~/Documents/misc/wallpapers/current &
 
 mako --default-timeout=5000 &
 
