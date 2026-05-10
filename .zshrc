@@ -39,6 +39,16 @@ alias smpv="swayhide mpv"
 alias :w="echo '🤡 <-- you'"
 alias mvd="~/scripts/move-from-downloads.sh"
 
+# Move a jj bookmark to @- and push it to git.
+# Usage: jjpush main | jjpush my-feature
+jjpush() {
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: jjpush <bookmark>"
+    return 1
+  fi
+  jj bookmark move "$1" --to @- && jj git push -b "$1"
+}
+
 bookpls() {
  if [ "$#" -eq 0 ]; then
    command bookpls "$HOME/Downloads/books" "usogui"
@@ -67,11 +77,10 @@ alias nin="nvim"
 alias vim="nvim"
 export SUDO_EDITOR="/usr/bin/nvim"
 export EDITOR="/usr/bin/nvim"
+export VISUAL="/usr/bin/neovide"
 
-# Use a tmux split external editor for pi only, so Ctrl+G doesn't hide the chat.
-export PI_VISUAL="$HOME/.local/bin/pi-editor"
 pi() {
-    VISUAL="$PI_VISUAL" command pi "$@"
+  VISUAL="$HOME/scripts/pi-neovide-below.sh" command pi "$@"
 }
 
 alias ls="exa"

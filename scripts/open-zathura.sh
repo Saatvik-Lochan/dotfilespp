@@ -3,7 +3,11 @@
 set -e
 set -o pipefail
 
-pdf=$(fd --no-ignore -e pdf . ~/ | awk 'sub(/^\/home\/saatvikl\//, "")' | fzfmenu -m)
+pdf="$(
+  { fd --no-ignore -e pdf . ~/ || true; } |
+    awk 'sub(/^\/home\/saatvikl\//, "")' |
+    fzfmenu -m
+)"
 
 name=$(basename "$pdf")
 

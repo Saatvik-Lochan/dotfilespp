@@ -243,10 +243,10 @@ binds {
 
     Alt+Q { close-window; }
 
-    Alt+H     { focus-column-or-monitor-left; }
-    Alt+L     { focus-column-or-monitor-right; }
-    Alt+J     { focus-window-or-monitor-down; }
-    Alt+K     { focus-window-or-monitor-up; }
+    Alt+H     { focus-column-left; }
+    Alt+L     { focus-column-right; }
+    Alt+J     { focus-window-down; }
+    Alt+K     { focus-window-up; }
 
     Alt+Ctrl+Left  { move-column-left; }
     Alt+Ctrl+Down  { move-window-down; }
@@ -265,11 +265,17 @@ binds {
     Alt+Shift+J { move-workspace-down; }
     Alt+Shift+K   { move-workspace-up; }
 
-    Alt+Comma  { focus-monitor-previous; }
-    Alt+Period { focus-monitor-next; }
+    Alt+Period { focus-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
+    Alt+Comma  { focus-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Tab    { focus-monitor "eDP-1"; }
 
-    Alt+Shift+Period { move-column-to-monitor-next; }
-    Alt+Shift+Comma { move-column-to-monitor-previous; }
+    Alt+Shift+Period { move-window-to-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
+    Alt+Shift+Comma  { move-window-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Shift+Tab    { move-window-to-monitor "eDP-1"; }
+
+    Alt+Ctrl+Period { move-workspace-to-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
+    Alt+Ctrl+Comma  { move-workspace-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Ctrl+Tab    { move-workspace-to-monitor "eDP-1"; }
 
     Alt+U { move-column-to-monitor-next; }
     Alt+Shift+U { move-workspace-to-monitor-next; }

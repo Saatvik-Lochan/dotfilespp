@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 tmux list-sessions -F '#S' | while read -r session; do
-    # Skip if the session has an attached client
 
+    # Skip if the session has an attached client
     if [[ -n $(tmux list-clients -t "$session") ]]; then
         continue
     fi
