@@ -17,8 +17,10 @@
 # Public commands:
 #   pick
 #       Fuzzy-pick a project path.
+#       Uses a no-TTL /tmp project cache.
 #       Enter  -> open <path>
 #       Ctrl-y -> new <path>
+#       Ctrl-r -> regenerate project list and update cache
 #
 #   open <path>
 #       Canonicalize path with realpath.
@@ -44,7 +46,8 @@
 #       SESSION_NAME    ACTIVE_COMMAND    ROOT_PATH
 #
 #   Enter  -> switch to hovered session
-#   Ctrl-x -> kill hovered session and reload picker
+#   Ctrl-i -> kill hovered session and reload picker
+#   Ctrl-x -> kill all sessions in the current picker whose active command is zsh
 #
 #   Preview is the active pane capture of the hovered session.
 #
@@ -58,12 +61,15 @@
 #     +N has no semantic meaning.
 #
 # Internal commands:
-#   __rows-path <path>, __rows-all
+#   __rows-path <path>, __rows-all, __kill-zsh-path <path>, __kill-zsh-all,
+#   __projects-cache, __projects-refresh
 #       Used by fzf reload bindings. Not intended as stable public API.
 
 set -euo pipefail
 
-SCRIPT="$0"
+SCRIPT="${0:A}"
+typeset -g SESSION_RECORDS_CACHE=""
+typeset -g SESSION_RECORDS_CACHE_LOADED=0
 
 canonical_path() {
     realpath "$1"
@@ -72,24 +78,30 @@ canonical_path() {
 path_components_for_name() {
     local root_path="$1"
     local rel
+    local -a comps
 
     if [[ "$root_path" == "$HOME" ]]; then
-        echo "HOME"
+        print -r -- "HOME"
         return
     fi
 
     if [[ "$root_path" == "$HOME"/* ]]; then
         rel="${root_path#$HOME/}"
-        echo "HOME"
-        print -r -- "$rel" | tr '/' '\n'
-        return
+        comps=(HOME ${(s:/:)rel})
+    else
+        rel="${root_path#/}"
+        comps=(${(s:/:)rel})
     fi
 
-    print -r -- "$root_path" | sed 's#^/##' | tr '/' '\n'
+    print -rl -- "${comps[@]}"
 }
 
 sanitize_name() {
-    print -r -- "$1" | tr '. -' '___' | awk '{ print toupper($0) }'
+    local name="$1"
+    name="${name//./_}"
+    name="${name// /_}"
+    name="${name//-/_}"
+    print -r -- "${name:u}"
 }
 
 session_root() {
@@ -106,60 +118,43 @@ session_root() {
     fi
 }
 
-session_active_pane() {
-    local session="$1"
-    tmux list-panes -t "$session" -F '#{?window_active,#{?pane_active,#{pane_id},},}' | grep -m1 . || true
-}
-
-session_active_command() {
-    local session="$1"
-    tmux list-panes -t "$session" -F '#{?window_active,#{?pane_active,#{pane_current_command},},}' 2>/dev/null | grep -m1 . || true
-}
-
-preview_session() {
-    local session="$1"
-    local pane
-    pane=$(session_active_pane "$session")
-    if [[ -z "$pane" ]]; then
-        echo "No active pane"
-        return
+session_records() {
+    if [[ "$SESSION_RECORDS_CACHE_LOADED" != "1" ]]; then
+        SESSION_RECORDS_CACHE=$(tmux list-sessions -F '#{session_name}	#{E:TMUX_SESSIONIZER_DIR}' 2>/dev/null || true)
+        SESSION_RECORDS_CACHE_LOADED=1
     fi
-    tmux capture-pane -ep -t "$pane" 2>/dev/null || true
+    print -r -- "$SESSION_RECORDS_CACHE"
 }
 
-all_sessions() {
-    tmux list-sessions -F '#{session_name}' 2>/dev/null || true
+tmux_has_sessions() {
+    [[ -n "$(session_records)" ]]
+}
+
+sessions_for_root() {
+    local root_path="$1"
+    local session root
+
+    session_records | while IFS=$'\t' read -r session root; do
+        if [[ "$root" == "$root_path" ]]; then
+            print -r -- "$session"
+        fi
+    done
 }
 
 sessions_for_path() {
     local root_path
     root_path=$(canonical_path "$1")
-
-    local s root
-    all_sessions | while IFS= read -r s; do
-        root=$(session_root "$s")
-        if [[ "$root" == "$root_path" ]]; then
-            print -r -- "$s"
-        fi
-    done
+    sessions_for_root "$root_path"
 }
 
-name_used_by_other_path() {
-    local name="$1"
-    local root_path="$2"
-    local root
+available_session_name_for_root() {
+    local root_path="$1"
+    local session root
+    local -A roots
 
-    if ! tmux has-session -t="$name" 2>/dev/null; then
-        return 1
-    fi
-
-    root=$(session_root "$name")
-    [[ "$root" != "$root_path" ]]
-}
-
-available_session_name() {
-    local root_path
-    root_path=$(canonical_path "$1")
+    while IFS=$'\t' read -r session root; do
+        roots[$session]="$root"
+    done < <(session_records)
 
     local -a comps
     comps=(${(f)"$(path_components_for_name "$root_path")"})
@@ -169,17 +164,17 @@ available_session_name() {
         start=$((${#comps} - n + 1))
         candidate=$(sanitize_name "${(j:_:)comps[$start,-1]}")
 
-        if name_used_by_other_path "$candidate" "$root_path"; then
+        if [[ -n "${roots[$candidate]+set}" && "${roots[$candidate]}" != "$root_path" ]]; then
             continue
         fi
 
-        if ! tmux has-session -t="$candidate" 2>/dev/null; then
+        if [[ -z "${roots[$candidate]+set}" ]]; then
             print -r -- "$candidate"
             return
         fi
 
         i=1
-        while tmux has-session -t="${candidate}+${i}" 2>/dev/null; do
+        while [[ -n "${roots[${candidate}+${i}]+set}" ]]; do
             ((i++))
         done
         print -r -- "${candidate}+${i}"
@@ -189,7 +184,7 @@ available_session_name() {
     candidate=$(sanitize_name "$root_path")
     i=1
     name="$candidate"
-    while tmux has-session -t="$name" 2>/dev/null; do
+    while [[ -n "${roots[$name]+set}" ]]; do
         name="${candidate}+${i}"
         ((i++))
     done
@@ -199,9 +194,9 @@ available_session_name() {
 create_session() {
     local root_path name
     root_path=$(canonical_path "$1")
-    name=$(available_session_name "$root_path")
+    name=$(available_session_name_for_root "$root_path")
 
-    if [[ -z "${TMUX:-}" ]] && ! pgrep tmux >/dev/null 2>&1; then
+    if [[ -z "${TMUX:-}" ]] && ! tmux_has_sessions; then
         exec tmux new-session -s "$name" -c "$root_path" -e "TMUX_SESSIONIZER_DIR=$root_path"
     fi
 
@@ -219,19 +214,46 @@ switch_to_session() {
 }
 
 session_picker_rows() {
-    local session root cmd
+    local filter_root="${1:-}"
+    local session root cmd window_active pane_active
+    local -A commands
 
-    while IFS= read -r session; do
-        root=$(session_root "$session")
+    while IFS=$'\t' read -r session window_active pane_active cmd; do
+        if [[ "$window_active" == "1" && "$pane_active" == "1" ]]; then
+            commands[$session]="$cmd"
+        fi
+    done < <(tmux list-panes -a -F '#{session_name}	#{window_active}	#{pane_active}	#{pane_current_command}' 2>/dev/null || true)
+
+    session_records | while IFS=$'\t' read -r session root; do
         [[ -z "$root" ]] && continue
-        cmd=$(session_active_command "$session")
+        [[ -n "$filter_root" && "$root" != "$filter_root" ]] && continue
+        cmd="${commands[$session]-}"
         cmd="${cmd[1,40]}"
         printf '%-24s %-40s %s\n' "$session" "$cmd" "$root"
     done
 }
 
+kill_zsh_sessions() {
+    local filter_root="${1:-}"
+    local session root cmd window_active pane_active
+    local -A commands
+
+    while IFS=$'\t' read -r session window_active pane_active cmd; do
+        if [[ "$window_active" == "1" && "$pane_active" == "1" ]]; then
+            commands[$session]="$cmd"
+        fi
+    done < <(tmux list-panes -a -F '#{session_name}	#{window_active}	#{pane_active}	#{pane_current_command}' 2>/dev/null || true)
+
+    session_records | while IFS=$'\t' read -r session root; do
+        [[ -z "$root" ]] && continue
+        [[ -n "$filter_root" && "$root" != "$filter_root" ]] && continue
+        [[ "${commands[$session]-}" == "zsh" ]] && tmux kill-session -t "$session" 2>/dev/null || true
+    done
+}
+
 session_picker() {
     local reload_cmd="$1"
+    local kill_zsh_cmd="$2"
     local selected
 
     selected=$(
@@ -239,21 +261,27 @@ session_picker() {
             --with-nth=1,2,3.. \
             --preview='tmux capture-pane -ep -t {1} 2>/dev/null' \
             --preview-window=down:50% \
-            --bind "ctrl-x:execute-silent(tmux kill-session -t {1})+reload($reload_cmd)"
+            --bind "ctrl-i:execute-silent(tmux kill-session -t {1})+reload($reload_cmd)" \
+            --bind "ctrl-x:execute-silent($kill_zsh_cmd)+reload($reload_cmd)"
     )
 
     [[ -z "$selected" ]] && exit 0
     switch_to_session "${selected%%[[:space:]]*}"
 }
 
+pick_session_for_root() {
+    local root_path="$1"
+    session_picker "${(q)SCRIPT} __rows-path ${(q)root_path}" "${(q)SCRIPT} __kill-zsh-path ${(q)root_path}"
+}
+
 pick_session_for_path() {
     local root_path
     root_path=$(canonical_path "$1")
-    session_picker "${(q)SCRIPT} __rows-path ${(q)root_path}"
+    pick_session_for_root "$root_path"
 }
 
 pick_all_sessions() {
-    session_picker "${(q)SCRIPT} __rows-all"
+    session_picker "${(q)SCRIPT} __rows-all" "${(q)SCRIPT} __kill-zsh-all"
 }
 
 open_path() {
@@ -261,7 +289,7 @@ open_path() {
     root_path=$(canonical_path "$1")
 
     local -a sessions
-    sessions=(${(f)"$(sessions_for_path "$root_path")"})
+    sessions=(${(f)"$(sessions_for_root "$root_path")"})
     count=${#sessions}
 
     if (( count == 0 )); then
@@ -269,13 +297,19 @@ open_path() {
     elif (( count == 1 )); then
         switch_to_session "$sessions[1]"
     else
-        pick_session_for_path "$root_path"
+        pick_session_for_root "$root_path"
     fi
+}
+
+project_cache_file() {
+    print -r -- "/tmp/tmux-sessionizer-projects-${USER:-$(id -u)}"
 }
 
 dirs() {
     local depth=$1; shift
-    fd . "$@" --exact-depth "$depth" --type d -L
+    local -a excludes
+    excludes=(-E .git -E __pycache__ -E node_modules -E target -E build -E dist -E .venv -E venv)
+    fd . "$@" --exact-depth "$depth" --type d -L "${excludes[@]}"
 }
 
 singles() {
@@ -302,13 +336,36 @@ projects() {
    }
 }
 
+refresh_project_cache() {
+    local cache tmp
+    cache=$(project_cache_file)
+    tmp="${cache}.$$"
+
+    projects | tee "$tmp"
+    mv "$tmp" "$cache" 2>/dev/null || true
+}
+
+cached_projects() {
+    local cache
+    cache=$(project_cache_file)
+
+    if [[ -f "$cache" ]]; then
+        cat "$cache"
+    else
+        refresh_project_cache
+    fi
+}
+
 pick_path() {
-    local out key selected
-    out=$(projects | fzf --expect=ctrl-y)
+    local out key selected refresh_cmd
+    local -a lines
+    refresh_cmd="${(q)SCRIPT} __projects-refresh"
+    out=$(cached_projects | fzf --expect=ctrl-y --bind "ctrl-r:reload($refresh_cmd)")
     [[ -z "$out" ]] && exit 0
 
-    key=$(print -r -- "$out" | head -n1)
-    selected=$(print -r -- "$out" | tail -n1)
+    lines=(${(f)out})
+    key="$lines[1]"
+    selected="$lines[-1]"
     [[ -z "$selected" ]] && exit 0
 
     if [[ "$key" == "ctrl-y" ]]; then
@@ -351,11 +408,27 @@ case "$cmd" in
         ;;
     __rows-path)
         [[ $# -eq 2 ]] || exit 2
-        sessions_for_path "$2" | session_picker_rows
+        session_picker_rows "$(canonical_path "$2")"
         ;;
     __rows-all)
         [[ $# -eq 1 ]] || exit 2
-        all_sessions | session_picker_rows
+        session_picker_rows
+        ;;
+    __kill-zsh-path)
+        [[ $# -eq 2 ]] || exit 2
+        kill_zsh_sessions "$(canonical_path "$2")"
+        ;;
+    __kill-zsh-all)
+        [[ $# -eq 1 ]] || exit 2
+        kill_zsh_sessions
+        ;;
+    __projects-cache)
+        [[ $# -eq 1 ]] || exit 2
+        cached_projects
+        ;;
+    __projects-refresh)
+        [[ $# -eq 1 ]] || exit 2
+        refresh_project_cache
         ;;
     *)
         # Backwards compatibility: one arg means open that path.
