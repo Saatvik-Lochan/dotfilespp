@@ -278,7 +278,7 @@ session_picker() {
 
     selected=$(
         eval "$reload_cmd" | fzf \
-            --header='enter: switch | ctrl-y: new | ctrl-i/tab: kill | ctrl-x: kill zsh | esc: cancel' \
+            --footer='enter: switch | ctrl-y: new | ctrl-i/tab: kill | ctrl-x: kill zsh | esc: cancel' \
             --delimiter='\t' \
             --with-nth=4 \
             --preview="${(q)SCRIPT} __preview {1}" \
@@ -390,7 +390,7 @@ pick_path() {
     local -a lines
     refresh_cmd="${(q)SCRIPT} __projects-refresh"
     out=$(cached_projects | fzf \
-        --header='enter: open | ctrl-y: new | ctrl-r: refresh | esc: cancel' \
+        --footer='enter: open | ctrl-y: new | ctrl-r: refresh | esc: cancel' \
         --expect=ctrl-y \
         --bind "ctrl-r:reload($refresh_cmd)")
     [[ -z "$out" ]] && exit 0
