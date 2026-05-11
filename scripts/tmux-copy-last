@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+r"""
+tmux-copy-last: copy the previous tmux command block or output.
+
+Contract / assumptions
+----------------------
+This script parses *plain-text* tmux pane capture, not ANSI/color output.
+
+It does not know your shell prompt semantically. Instead, it uses a configurable
+regular expression to identify prompt command lines:
+
+    TMUX_COPY_LAST_PROMPT_RE='^❯( |$)'
+
+A matching line is treated as a boundary. The default means: a line whose visible
+text starts with the prompt glyph `❯`, followed by a space or end-of-line.
+This intentionally avoids matching arbitrary `>` characters in command output.
+
+A bare prompt line is treated as an idle/current prompt, not as the command to
+copy. The command boundary is the last non-bare prompt line before that.
+
+Two modes:
+
+    output  copy only previous command output
+    block   copy previous prompt command line + output
+
+For two-line prompts like:
+
+    [SCRIPTS+1] ~/dotfiles/scripts main ⇡3
+    ❯ ls
+
+only the `❯ ls` line is used as the boundary.
+
+Current-prompt context stripping:
+If the last prompt boundary is a bare prompt, the script assumes you are idle at
+an empty prompt and strips some prompt-context lines immediately before it.
+Default:
+
+    TMUX_COPY_LAST_BARE_PROMPT_RE='^❯\s*$'
+    TMUX_COPY_LAST_CONTEXT_LINES=1
+
+That removes the `[SCRIPTS+1] ...` line before the final bare `❯`. If your
+future prompt is single-line, set TMUX_COPY_LAST_CONTEXT_LINES=0. If your prompt
+has more pre-prompt context lines, increase it.
+
+Clipboard:
+Uses wl-copy, xclip, xsel, pbcopy, or clip.exe unless --print is passed.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import re
+import shutil
+import subprocess
+import sys
+from typing import Sequence
+
+
+DEFAULT_PROMPT_RE = r"^❯( |$)"
+DEFAULT_BARE_PROMPT_RE = r"^❯\s*$"
+
+
+def run(cmd: Sequence[str], *, input_text: str | None = None) -> str:
+    p = subprocess.run(
+        cmd,
+        input=input_text,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if p.returncode != 0:
+        raise SystemExit(f"command failed: {' '.join(cmd)}\n{p.stderr.strip()}")
+    return p.stdout
+
+
+def capture_pane(start: str, pane: str | None) -> list[str]:
+    cmd = ["tmux", "capture-pane", "-p", "-S", start]
+    if pane:
+        cmd.extend(["-t", pane])
+    text = run(cmd)
+    return text.splitlines()
+
+
+def tmux_notify(message: str, pane: str | None = None) -> None:
+    if not os.getenv("TMUX") and not pane:
+        return
+    cmd = ["tmux", "display-message"]
+    if pane:
+        cmd.extend(["-t", pane])
+    cmd.append(message)
+    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def copy_to_clipboard(text: str) -> str:
+    candidates = [
+        (["wl-copy"], "wl-copy"),
+        (["xclip", "-selection", "clipboard"], "xclip"),
+        (["xsel", "--clipboard", "--input"], "xsel"),
+        (["pbcopy"], "pbcopy"),
+        (["clip.exe"], "clip.exe"),
+    ]
+    for cmd, exe in candidates:
+        if shutil.which(exe):
+            run(cmd, input_text=text)
+            return exe
+    raise SystemExit("no clipboard tool found; install wl-copy/xclip/xsel/pbcopy or use --print")
+
+
+def extract(lines: list[str], mode: str, prompt_re: str, bare_prompt_re: str, context_lines: int) -> str:
+    prompt = re.compile(prompt_re)
+    bare_prompt = re.compile(bare_prompt_re)
+
+    prompt_indexes = [i for i, line in enumerate(lines) if prompt.search(line)]
+    if not prompt_indexes:
+        raise SystemExit("could not find any prompt boundaries in tmux pane capture")
+
+    last_prompt_i = prompt_indexes[-1]
+    have_idle_prompt = bare_prompt.search(lines[last_prompt_i]) is not None
+
+    if have_idle_prompt:
+        # Idle shell: final bare prompt is the current prompt. Copy the last
+        # non-bare command before it.
+        end_i = max(0, last_prompt_i - context_lines) if context_lines > 0 else last_prompt_i
+        command_candidates = [i for i in prompt_indexes if i < end_i and not bare_prompt.search(lines[i])]
+    else:
+        # Running command / manual invocation: the final non-bare prompt line is
+        # the command currently being executed. Copy the completed command block
+        # before it, not this script's own command line.
+        end_i = max(0, last_prompt_i - context_lines) if context_lines > 0 else last_prompt_i
+        command_candidates = [i for i in prompt_indexes if i < end_i and not bare_prompt.search(lines[i])]
+
+    if not command_candidates:
+        raise SystemExit("could not find a non-bare command prompt boundary in tmux pane capture")
+
+    command_i = command_candidates[-1]
+    start_i = command_i if mode == "block" else command_i + 1
+    selected = lines[start_i:end_i]
+
+    # Avoid copying accidental trailing prompt gap. Empty/bare prompts are still
+    # prompts, so if the shell printed one or more bare `❯` lines after the
+    # command, trim them from the copied block/output.
+    while selected and (selected[-1] == "" or bare_prompt.search(selected[-1])):
+        selected.pop()
+
+    return "\n".join(selected) + ("\n" if selected else "")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Copy previous tmux command output/block.")
+    parser.add_argument("mode", choices=["output", "block", "o", "b"])
+    parser.add_argument("--print", action="store_true", help="print instead of copying to clipboard")
+    parser.add_argument("--start", default=os.getenv("TMUX_COPY_LAST_START", "-2000"), help="tmux capture-pane -S value; default -2000 for speed")
+    parser.add_argument("--pane", default=os.getenv("TMUX_PANE"), help="tmux target pane; bind with --pane '#{pane_id}'")
+    parser.add_argument("--debug", action="store_true", help="print detected prompt boundaries to stderr")
+    parser.add_argument("--prompt-re", default=os.getenv("TMUX_COPY_LAST_PROMPT_RE", DEFAULT_PROMPT_RE))
+    parser.add_argument("--bare-prompt-re", default=os.getenv("TMUX_COPY_LAST_BARE_PROMPT_RE", DEFAULT_BARE_PROMPT_RE))
+    parser.add_argument(
+        "--context-lines",
+        type=int,
+        default=int(os.getenv("TMUX_COPY_LAST_CONTEXT_LINES", "1")),
+        help="lines before final bare prompt to exclude; set 0 for single-line prompts",
+    )
+    args = parser.parse_args()
+
+    mode = {"o": "output", "b": "block"}.get(args.mode, args.mode)
+    lines = capture_pane(args.start, args.pane)
+    if args.debug:
+        prompt = re.compile(args.prompt_re)
+        idxs = [i for i, line in enumerate(lines) if prompt.search(line)]
+        print(f"pane={args.pane!r} lines={len(lines)} prompt_indexes={idxs[-10:]}", file=sys.stderr)
+        for i in idxs[-5:]:
+            print(f"{i}: {lines[i]!r}", file=sys.stderr)
+    text = extract(lines, mode, args.prompt_re, args.bare_prompt_re, args.context_lines)
+
+    if args.print:
+        sys.stdout.write(text)
+    else:
+        clipboard_tool = copy_to_clipboard(text)
+        line_count = 0 if not text else text.count("\n")
+        tmux_notify(f"copied last command {mode}: {line_count} lines via {clipboard_tool}", args.pane)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
