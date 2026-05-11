@@ -3,11 +3,7 @@
 # confirmations, etc.) must go above this block; everything else may go below.
 
 if [ -z "$TMUX" ]; then
-  if [[ -z "$OPEN_COPIED_TERM" ]]; then
-    exec ~/scripts/tmux-sessionizer.sh new ~
-  else
-    exec ~/scripts/open-helper-terminal.sh
-  fi
+  exec ~/scripts/terminal.sh enter-sessionizer
 fi
 
 alias home="cd $TMUX_SESSIONIZER_DIR"

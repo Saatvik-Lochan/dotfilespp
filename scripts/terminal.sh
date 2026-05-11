@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
-# tmux-sessionizer
-# ----------------
-# Directory-rooted tmux session manager.
+# terminal
+# --------
+# Central terminal/tmux-sessionizer controller.
 #
 # Core idea:
 #   The real identity of a session is not its tmux name; it is the canonical
@@ -15,31 +15,32 @@
 #   retroactively.
 #
 # Public commands:
-#   pick
-#       Fuzzy-pick a project path.
-#       Uses a no-TTL /tmp project cache.
-#       Enter  -> open <path>
-#       Ctrl-y -> new <path>
+#   launch-emulator
+#       Window-manager entrypoint. Launches kitty. If the focused app is kitty,
+#       sets OPEN_COPIED_TERM=1 so shell startup creates a same-root session.
+#
+#   enter-sessionizer
+#       Shell-startup entrypoint. Normal terminals create a new home-rooted
+#       session. Copied/helper terminals create a new session for the current
+#       sessionizer root, falling back to home.
+#
+#   clean
+#       Tmux detach hook. Kills unattached idle sessions.
+#
+#   projects
+#       Fuzzy-pick a project path. Uses a no-TTL /tmp project cache.
+#       Enter  -> switch --path <path> --create
+#       Ctrl-y -> new --path <path>
 #       Ctrl-r -> regenerate project list and update cache
 #
-#   open [--persist-if-one] <path>
-#       Canonicalize path with realpath.
-#       If no sessions exist for that root, create one.
-#       If one exists, switch to it, unless --persist-if-one is given.
-#       If multiple exist, show the session picker.
+#   switch [--all|--current|--path PATH] [--persist-if-one] [--create]
+#       Switch within a scope. Scope defines candidate sessions:
+#       --all: all sessionizer sessions; --current: current root; --path: path.
+#       --persist-if-one shows the picker even for one candidate.
+#       --create creates a new session at the scope's root if there are none.
 #
-#   new <path>
-#       Always create a new session associated with that canonical root.
-#
-#   sessions
-#       Show the session picker over all sessionizer-managed sessions.
-#
-#   list <path>
-#       Print session names associated with the canonical root, one per line.
-#
-#   path [session]
-#       Print TMUX_SESSIONIZER_DIR for the given session, or for the current
-#       tmux session if omitted.
+#   new [--home|--current|--path PATH]
+#       Always create a new session for the selected target root.
 #
 # Session picker:
 #   Rows are:
@@ -284,7 +285,7 @@ session_picker() {
             --preview="${(q)SCRIPT} __preview {1}" \
             --preview-window=down:50% \
             --bind "ctrl-i:execute-silent(tmux kill-session -t {1})+reload($reload_cmd)" \
-            --bind "ctrl-y:become(${(q)SCRIPT} new {3})" \
+            --bind "ctrl-y:become(${(q)SCRIPT} new --path {3})" \
             --bind "ctrl-x:execute-silent($kill_zsh_cmd)+reload($reload_cmd)"
     )
 
@@ -307,27 +308,177 @@ pick_all_sessions() {
     session_picker "${(q)SCRIPT} __rows-all" "${(q)SCRIPT} __kill-zsh-all"
 }
 
-open_path() {
-    local persist_if_one=0
-    if [[ "${1:-}" == "--persist-if-one" ]]; then
-        persist_if_one=1
-        shift
+all_sessionizer_sessions() {
+    local session root
+    session_records | while IFS=$'\t' read -r session root; do
+        [[ -n "$root" ]] && print -r -- "$session"
+    done
+}
+
+notify_no_sessions() {
+    local msg="$1"
+    tmux display-message "$msg" 2>/dev/null || print -u2 -- "$msg"
+}
+
+switch_scope() {
+    local scope="$1"
+    local root_path="$2"
+    local persist_if_one="$3"
+    local create_if_none="$4"
+    local create_root count
+    local -a sessions
+
+    if [[ "$scope" == "all" ]]; then
+        sessions=(${(f)"$(all_sessionizer_sessions)"})
+        create_root=$(canonical_path ~)
+    else
+        sessions=(${(f)"$(sessions_for_root "$root_path")"})
+        create_root="$root_path"
     fi
 
-    local root_path count session
-    root_path=$(canonical_path "$1")
-
-    local -a sessions
-    sessions=(${(f)"$(sessions_for_root "$root_path")"})
     count=${#sessions}
 
     if (( count == 0 )); then
-        create_session "$root_path"
+        if (( create_if_none )); then
+            create_session "$create_root"
+        else
+            notify_no_sessions "no sessions found"
+        fi
     elif (( count == 1 && ! persist_if_one )); then
         switch_to_session "$sessions[1]"
     else
-        pick_session_for_root "$root_path"
+        if [[ "$scope" == "all" ]]; then
+            pick_all_sessions
+        else
+            pick_session_for_root "$root_path"
+        fi
     fi
+}
+
+switch_command() {
+    local scope="all"
+    local root_path=""
+    local scope_count=0
+    local persist_if_one=0
+    local create_if_none=0
+
+    while (( $# > 0 )); do
+        case "$1" in
+            --all)
+                ((++scope_count)); scope="all"; root_path=""; shift ;;
+            --current)
+                ((++scope_count)); scope="root"; root_path=$(session_root); shift ;;
+            --path)
+                [[ $# -ge 2 ]] || { usage; exit 2; }
+                ((++scope_count)); scope="root"; root_path=$(canonical_path "$2"); shift 2 ;;
+            --persist-if-one)
+                persist_if_one=1; shift ;;
+            --create)
+                create_if_none=1; shift ;;
+            *)
+                usage; exit 2 ;;
+        esac
+    done
+
+    if (( scope_count > 1 )); then
+        usage
+        exit 2
+    fi
+
+    if [[ "$scope" == "root" && -z "$root_path" ]]; then
+        notify_no_sessions "no current sessionizer root"
+        exit 0
+    fi
+
+    switch_scope "$scope" "$root_path" "$persist_if_one" "$create_if_none"
+}
+
+new_command() {
+    local target="home"
+    local root_path=""
+    local target_count=0
+
+    while (( $# > 0 )); do
+        case "$1" in
+            --home)
+                ((++target_count)); target="home"; root_path=""; shift ;;
+            --current)
+                ((++target_count)); target="current"; root_path=$(session_root); shift ;;
+            --path)
+                [[ $# -ge 2 ]] || { usage; exit 2; }
+                ((++target_count)); target="path"; root_path=$(canonical_path "$2"); shift 2 ;;
+            *)
+                usage; exit 2 ;;
+        esac
+    done
+
+    if (( target_count > 1 )); then
+        usage
+        exit 2
+    fi
+
+    case "$target" in
+        home)
+            create_session ~ ;;
+        current)
+            if [[ -n "$root_path" ]]; then
+                create_session "$root_path"
+            else
+                notify_no_sessions "no current sessionizer root"
+            fi ;;
+        path)
+            create_session "$root_path" ;;
+    esac
+}
+
+enter_sessionizer() {
+    local root
+
+    if [[ -z "${OPEN_COPIED_TERM:-}" ]]; then
+        create_session ~
+    else
+        root=$(session_root)
+        if [[ -n "$root" ]]; then
+            create_session "$root"
+        else
+            create_session ~
+        fi
+    fi
+}
+
+launch_emulator() {
+    local current_app
+    current_app=$(niri msg -j focused-window 2>/dev/null | jq .app_id 2>/dev/null || true)
+
+    if [[ "$current_app" == '"kitty"' ]]; then
+        exec kitty -o env=OPEN_COPIED_TERM=1
+    else
+        exec kitty
+    fi
+}
+
+clean_tmux() {
+    local session active_processes pid cmd
+
+    tmux list-sessions -F '#S' 2>/dev/null | while IFS= read -r session; do
+        if [[ -n "$(tmux list-clients -t "$session" 2>/dev/null)" ]]; then
+            continue
+        fi
+
+        active_processes=0
+        while read -r pid cmd; do
+            if [[ "$cmd" != "bash" && "$cmd" != "zsh" && "$cmd" != "fish" ]]; then
+                active_processes=$((active_processes + 1))
+            elif pgrep -P "$pid" >/dev/null 2>&1; then
+                active_processes=$((active_processes + 1))
+            fi
+        done < <(tmux list-panes -t "$session" -F '#{pane_pid} #{pane_current_command}' 2>/dev/null)
+
+        if [[ "$active_processes" -eq 0 ]]; then
+            echo "Killing idle session: $session" >> /tmp/tmux-session-kill.log
+            tmux kill-session -t "$session"
+        fi
+    done
 }
 
 project_cache_file() {
@@ -403,82 +554,72 @@ pick_path() {
     if [[ "$key" == "ctrl-y" ]]; then
         create_session "$selected"
     else
-        open_path "$selected"
+        switch_command --path "$selected" --create
     fi
 }
 
 usage() {
     cat <<EOF
-usage: $SCRIPT pick | open [--persist-if-one] <path> | new <path> | list <path> | path [session] | sessions
+usage: $SCRIPT launch-emulator | enter-sessionizer | clean | projects | switch [--all|--current|--path PATH] [--persist-if-one] [--create] | new [--home|--current|--path PATH]
 EOF
 }
 
-cmd="${1:-pick}"
+cmd="${1:-}"
+[[ -n "$cmd" ]] || { usage; exit 2; }
+shift
 case "$cmd" in
-    pick)
+    launch-emulator)
+        [[ $# -eq 0 ]] || { usage; exit 2; }
+        launch_emulator
+        ;;
+    enter-sessionizer)
+        [[ $# -eq 0 ]] || { usage; exit 2; }
+        enter_sessionizer
+        ;;
+    clean)
+        [[ $# -eq 0 ]] || { usage; exit 2; }
+        clean_tmux
+        ;;
+    projects)
+        [[ $# -eq 0 ]] || { usage; exit 2; }
         pick_path
         ;;
-    open)
-        if [[ $# -eq 2 ]]; then
-            open_path "$2"
-        elif [[ $# -eq 3 && "$2" == "--persist-if-one" ]]; then
-            open_path --persist-if-one "$3"
-        else
-            usage
-            exit 2
-        fi
+    switch)
+        switch_command "$@"
         ;;
     new)
-        [[ $# -eq 2 ]] || { usage; exit 2; }
-        create_session "$2"
-        ;;
-    list)
-        [[ $# -eq 2 ]] || { usage; exit 2; }
-        sessions_for_path "$2"
-        ;;
-    sessions)
-        [[ $# -eq 1 ]] || { usage; exit 2; }
-        pick_all_sessions
-        ;;
-    path)
-        [[ $# -le 2 ]] || { usage; exit 2; }
-        session_root "${2:-}"
+        new_command "$@"
         ;;
     __rows-path)
-        [[ $# -eq 2 ]] || exit 2
-        session_picker_rows "$(canonical_path "$2")"
+        [[ $# -eq 1 ]] || exit 2
+        session_picker_rows "$(canonical_path "$1")"
         ;;
     __rows-all)
-        [[ $# -eq 1 ]] || exit 2
+        [[ $# -eq 0 ]] || exit 2
         session_picker_rows
         ;;
     __preview)
-        [[ $# -eq 2 ]] || exit 2
-        preview_session "$2"
+        [[ $# -eq 1 ]] || exit 2
+        preview_session "$1"
         ;;
     __kill-zsh-path)
-        [[ $# -eq 2 ]] || exit 2
-        kill_zsh_sessions "$(canonical_path "$2")"
+        [[ $# -eq 1 ]] || exit 2
+        kill_zsh_sessions "$(canonical_path "$1")"
         ;;
     __kill-zsh-all)
-        [[ $# -eq 1 ]] || exit 2
+        [[ $# -eq 0 ]] || exit 2
         kill_zsh_sessions
         ;;
     __projects-cache)
-        [[ $# -eq 1 ]] || exit 2
+        [[ $# -eq 0 ]] || exit 2
         cached_projects
         ;;
     __projects-refresh)
-        [[ $# -eq 1 ]] || exit 2
+        [[ $# -eq 0 ]] || exit 2
         refresh_project_cache
         ;;
     *)
-        # Backwards compatibility: one arg means open that path.
-        if [[ $# -eq 1 && -e "$1" ]]; then
-            open_path "$1"
-        else
-            usage
-            exit 2
-        fi
+        usage
+        exit 2
         ;;
 esac
