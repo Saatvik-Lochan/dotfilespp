@@ -22,10 +22,10 @@
 #       Ctrl-y -> new <path>
 #       Ctrl-r -> regenerate project list and update cache
 #
-#   open <path>
+#   open [--persist-if-one] <path>
 #       Canonicalize path with realpath.
 #       If no sessions exist for that root, create one.
-#       If one exists, switch to it.
+#       If one exists, switch to it, unless --persist-if-one is given.
 #       If multiple exist, show the session picker.
 #
 #   new <path>
@@ -47,6 +47,7 @@
 #
 #   Enter  -> switch to hovered session
 #   Ctrl-i -> kill hovered session and reload picker
+#   Ctrl-y -> create a new session for the hovered root and switch to it
 #   Ctrl-x -> kill all sessions in the current picker whose active command is zsh
 #
 #   Preview is the active pane capture of the hovered session.
@@ -61,8 +62,9 @@
 #     +N has no semantic meaning.
 #
 # Internal commands:
-#   __rows-path <path>, __rows-all, __kill-zsh-path <path>, __kill-zsh-all,
-#   __projects-cache, __projects-refresh
+#   __rows-path <path>, __rows-all, __preview <session>,
+#   __kill-zsh-path <path>, __kill-zsh-all, __projects-cache,
+#   __projects-refresh
 #       Used by fzf reload bindings. Not intended as stable public API.
 
 set -euo pipefail
@@ -229,8 +231,26 @@ session_picker_rows() {
         [[ -n "$filter_root" && "$root" != "$filter_root" ]] && continue
         cmd="${commands[$session]-}"
         cmd="${cmd[1,40]}"
-        printf '%-24s %-40s %s\n' "$session" "$cmd" "$root"
+        printf '%s\t%s\t%s\t%-24s %-40s %s\n' "$session" "$cmd" "$root" "$session" "$cmd" "$root"
     done
+}
+
+preview_session() {
+    local session="$1"
+    tmux capture-pane -ep -t "$session" 2>/dev/null | perl -e '
+        $n = $ENV{FZF_PREVIEW_LINES} || 40;
+        while (<STDIN>) {
+            push @lines, $_;
+            $s = $_;
+            $s =~ s/\e\[[0-?]*[ -\/]*[@-~]//g;
+            $last = scalar @lines if $s =~ /\S/;
+        }
+        exit unless defined $last;
+        @lines = @lines[0 .. $last - 1];
+        $start = @lines - $n;
+        $start = 0 if $start < 0;
+        print @lines[$start .. $#lines] if @lines;
+    '
 }
 
 kill_zsh_sessions() {
@@ -258,15 +278,17 @@ session_picker() {
 
     selected=$(
         eval "$reload_cmd" | fzf \
-            --with-nth=1,2,3.. \
-            --preview='tmux capture-pane -ep -t {1} 2>/dev/null' \
+            --delimiter='\t' \
+            --with-nth=4 \
+            --preview="${(q)SCRIPT} __preview {1}" \
             --preview-window=down:50% \
             --bind "ctrl-i:execute-silent(tmux kill-session -t {1})+reload($reload_cmd)" \
+            --bind "ctrl-y:become(${(q)SCRIPT} new {3})" \
             --bind "ctrl-x:execute-silent($kill_zsh_cmd)+reload($reload_cmd)"
     )
 
     [[ -z "$selected" ]] && exit 0
-    switch_to_session "${selected%%[[:space:]]*}"
+    switch_to_session "${selected%%$'\t'*}"
 }
 
 pick_session_for_root() {
@@ -285,6 +307,12 @@ pick_all_sessions() {
 }
 
 open_path() {
+    local persist_if_one=0
+    if [[ "${1:-}" == "--persist-if-one" ]]; then
+        persist_if_one=1
+        shift
+    fi
+
     local root_path count session
     root_path=$(canonical_path "$1")
 
@@ -294,7 +322,7 @@ open_path() {
 
     if (( count == 0 )); then
         create_session "$root_path"
-    elif (( count == 1 )); then
+    elif (( count == 1 && ! persist_if_one )); then
         switch_to_session "$sessions[1]"
     else
         pick_session_for_root "$root_path"
@@ -377,7 +405,7 @@ pick_path() {
 
 usage() {
     cat <<EOF
-usage: $SCRIPT pick | open <path> | new <path> | list <path> | path [session] | sessions
+usage: $SCRIPT pick | open [--persist-if-one] <path> | new <path> | list <path> | path [session] | sessions
 EOF
 }
 
@@ -387,8 +415,14 @@ case "$cmd" in
         pick_path
         ;;
     open)
-        [[ $# -eq 2 ]] || { usage; exit 2; }
-        open_path "$2"
+        if [[ $# -eq 2 ]]; then
+            open_path "$2"
+        elif [[ $# -eq 3 && "$2" == "--persist-if-one" ]]; then
+            open_path --persist-if-one "$3"
+        else
+            usage
+            exit 2
+        fi
         ;;
     new)
         [[ $# -eq 2 ]] || { usage; exit 2; }
@@ -413,6 +447,10 @@ case "$cmd" in
     __rows-all)
         [[ $# -eq 1 ]] || exit 2
         session_picker_rows
+        ;;
+    __preview)
+        [[ $# -eq 2 ]] || exit 2
+        preview_session "$2"
         ;;
     __kill-zsh-path)
         [[ $# -eq 2 ]] || exit 2

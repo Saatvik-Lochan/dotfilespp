@@ -1,0 +1,82 @@
+[user]
+	name = Saatvik Lochan
+	email = saatviklochan@gmail.com
+[core]
+	editor = nvim
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[safe]
+	directory = /home/saatvikl/sshfs_mounts/gpu5
+	directory = /home/saatvikl/mounts/gpu1/act-artifact-internal
+	directory = /home/saatvikl/mounts/gpu4/cs-444
+	directory = /home/saatvikl/mounts/gpu5
+[init]
+	defaultBranch = main
+[alias]
+	st = status --short
+	suno = status -suno
+	br = branch
+	ba = branch -a
+	co = checkout
+	sw = switch
+	swc = switch -c
+	ci = commit
+	cm = commit -m
+	amend = commit --amend
+	amendn = commit --amend --no-edit
+	a = add
+	aa = add --all
+	au = add -u
+	ap = add --patch
+	d = diff
+	ds = diff --staged
+	lg = log --oneline --graph --decorate --all
+	l = log --oneline
+	last = log -1 HEAD
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	ll = log --graph --pretty=format:'%C(yellow)%h%Creset %Cgreen%ad%Creset %C(auto)%d%Creset %s %Cblue[%an]%Creset' --date=short
+	f = fetch
+	fa = fetch --all --prune
+	pl = pull
+	ps = push
+	pf = push --force-with-lease
+	up = pull --rebase --autostash
+	rb = rebase
+	rbi = rebase -i
+	rbc = rebase --continue
+	rba = rebase --abort
+	mg = merge
+	ss = stash
+	sl = stash list
+	sp = stash pop
+	sa = stash apply
+	swip = stash push -m WIP
+	unstage = restore --staged
+	discard = restore
+	undo = reset --soft HEAD~1
+	hard = reset --hard
+	cleanup = remote prune origin
+	gone = !git branch --merged | grep -vE '^[* ] (main|master|develop)$' | xargs -r git branch -d
+	aliases = config --get-regexp alias
+	root = rev-parse --show-toplevel
+	who = shortlog -sn
+	current = branch --show-current
+	remotes = remote -v
+	sh = show
+	shs = show --stat
+	shn = show --name-only
+	bl = blame
+	blw = blame -w
+	filelog = log --follow --
+	filehist = log --follow --patch --
+	sm = submodule
+	smi = submodule init
+	smu = submodule update
+	smui = submodule update --init
+	smuir = submodule update --init --recursive
+	sms = submodule status
+	smf = submodule foreach
+	smup = submodule update --remote --merge

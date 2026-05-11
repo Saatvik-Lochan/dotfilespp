@@ -4,7 +4,7 @@
 
 if [ -z "$TMUX" ]; then
   if [[ -z "$OPEN_COPIED_TERM" ]]; then
-    exec tmux
+    exec ~/scripts/tmux-sessionizer.sh new ~
   else
     exec ~/scripts/open-helper-terminal.sh
   fi
@@ -161,7 +161,7 @@ bindkey -M vicmd -s 'L' '$'
 bindkey -M vicmd -s 'H' '^'
 
 # zoxide
-eval "$(zoxide init --cmd cd zsh)"
+# eval "$(zoxide init --cmd cd zsh)"
 
 # pyenv
 export PATH="$HOME/.pyenv/bin:$PATH"
