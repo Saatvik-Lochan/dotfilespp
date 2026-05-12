@@ -63,10 +63,9 @@
 #     +N has no semantic meaning.
 #
 # Internal commands:
-#   __rows-path <path>, __rows-all, __preview <session>,
-#   __kill-zsh-path <path>, __kill-zsh-all, __projects-cache,
-#   __projects-refresh
-#       Used by fzf reload bindings. Not intended as stable public API.
+#   __rows-path <path>, __rows-all, __preview <session>, __kill-session <session>,
+#   __kill-zsh-path <path>, __kill-zsh-all, __projects-refresh
+#       Used by fzf reload/preview/key bindings. Not intended as stable public API.
 
 set -euo pipefail
 
@@ -142,12 +141,6 @@ sessions_for_root() {
             print -r -- "$session"
         fi
     done
-}
-
-sessions_for_path() {
-    local root_path
-    root_path=$(canonical_path "$1")
-    sessions_for_root "$root_path"
 }
 
 available_session_name_for_root() {
@@ -254,10 +247,56 @@ preview_session() {
     '
 }
 
+session_exists_in_list() {
+    local needle="$1" item
+    shift
+    for item in "$@"; do
+        [[ "$item" == "$needle" ]] && return 0
+    done
+    return 1
+}
+
+choose_survivor_session() {
+    local current="$1"
+    shift
+    local session root
+
+    session_records | while IFS=$'\t' read -r session root; do
+        [[ -z "$root" ]] && continue
+        [[ "$session" == "$current" ]] && continue
+        if ! session_exists_in_list "$session" "$@"; then
+            print -r -- "$session"
+            return
+        fi
+    done
+}
+
+kill_sessions_safe() {
+    local current survivor session
+    local -a victims
+    victims=("$@")
+    (( ${#victims} == 0 )) && return
+
+    current=$(tmux display-message -p '#{session_name}' 2>/dev/null || true)
+    if [[ -n "$current" ]] && session_exists_in_list "$current" "${victims[@]}"; then
+        survivor=$(choose_survivor_session "$current" "${victims[@]}")
+        [[ -n "$survivor" ]] && tmux switch-client -t "$survivor" 2>/dev/null || true
+    fi
+
+    for session in "${victims[@]}"; do
+        tmux kill-session -t "$session" 2>/dev/null || true
+    done
+}
+
+kill_session_safe() {
+    kill_sessions_safe "$1"
+}
+
 kill_zsh_sessions() {
     local filter_root="${1:-}"
     local session root cmd window_active pane_active
     local -A commands
+    local -a victims
 
     while IFS=$'\t' read -r session window_active pane_active cmd; do
         if [[ "$window_active" == "1" && "$pane_active" == "1" ]]; then
@@ -265,11 +304,13 @@ kill_zsh_sessions() {
         fi
     done < <(tmux list-panes -a -F '#{session_name}	#{window_active}	#{pane_active}	#{pane_current_command}' 2>/dev/null || true)
 
-    session_records | while IFS=$'\t' read -r session root; do
+    while IFS=$'\t' read -r session root; do
         [[ -z "$root" ]] && continue
         [[ -n "$filter_root" && "$root" != "$filter_root" ]] && continue
-        [[ "${commands[$session]-}" == "zsh" ]] && tmux kill-session -t "$session" 2>/dev/null || true
-    done
+        [[ "${commands[$session]-}" == "zsh" ]] && victims+=("$session")
+    done < <(session_records)
+
+    kill_sessions_safe "${victims[@]}"
 }
 
 session_picker() {
@@ -284,7 +325,7 @@ session_picker() {
             --with-nth=4 \
             --preview="${(q)SCRIPT} __preview {1}" \
             --preview-window=down:50% \
-            --bind "ctrl-i:execute-silent(tmux kill-session -t {1})+reload($reload_cmd)" \
+            --bind "ctrl-i:execute-silent(${(q)SCRIPT} __kill-session {1})+reload($reload_cmd)" \
             --bind "ctrl-y:become(${(q)SCRIPT} new --path {3})" \
             --bind "ctrl-x:execute-silent($kill_zsh_cmd)+reload($reload_cmd)"
     )
@@ -296,12 +337,6 @@ session_picker() {
 pick_session_for_root() {
     local root_path="$1"
     session_picker "${(q)SCRIPT} __rows-path ${(q)root_path}" "${(q)SCRIPT} __kill-zsh-path ${(q)root_path}"
-}
-
-pick_session_for_path() {
-    local root_path
-    root_path=$(canonical_path "$1")
-    pick_session_for_root "$root_path"
 }
 
 pick_all_sessions() {
@@ -476,7 +511,7 @@ clean_tmux() {
 
         if [[ "$active_processes" -eq 0 ]]; then
             echo "Killing idle session: $session" >> /tmp/tmux-session-kill.log
-            tmux kill-session -t "$session"
+            tmux kill-session -t "$session" 2>/dev/null || true
         fi
     done
 }
@@ -602,6 +637,10 @@ case "$cmd" in
         [[ $# -eq 1 ]] || exit 2
         preview_session "$1"
         ;;
+    __kill-session)
+        [[ $# -eq 1 ]] || exit 2
+        kill_session_safe "$1"
+        ;;
     __kill-zsh-path)
         [[ $# -eq 1 ]] || exit 2
         kill_zsh_sessions "$(canonical_path "$1")"
@@ -609,10 +648,6 @@ case "$cmd" in
     __kill-zsh-all)
         [[ $# -eq 0 ]] || exit 2
         kill_zsh_sessions
-        ;;
-    __projects-cache)
-        [[ $# -eq 0 ]] || exit 2
-        cached_projects
         ;;
     __projects-refresh)
         [[ $# -eq 0 ]] || exit 2
