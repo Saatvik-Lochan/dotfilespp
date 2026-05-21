@@ -143,29 +143,11 @@ recent-windows {
     }
 }
 
-output "eDP-1" {
-    scale 1
-    transform "normal"
-    position x=640 y=1440
-}
-
-output "Dell Inc. DELL U2412M YMYH147B060S" {
-    transform "90"
-    scale 1
-    position x=2560 y=0
-
-    layout {
-        default-column-width { proportion 1.0; }
-    }
-}
-
-output "Acer Technologies CB272U 0x3131AB9A" {
-  scale 1
-  position x=0 y=0
-}
+include "outputs.kdl"
 
 include "colors.kdl"
 spawn-at-startup "zsh" "-c" "/home/saatvikl/scripts/init"
+spawn-at-startup "/home/saatvikl/.config/niri/niri-output-layout.sh" "--daemon"
 
 prefer-no-csd
 screenshot-path "~/screenshot/%Y-%m-%d_%H-%M-%S.png"
@@ -189,7 +171,7 @@ window-rule {
 }
 
 window-rule {
-    match title="^fzfmenu$"
+    match title="^(fzfmenu|taskwarrior)$"
     open-floating true
     opacity 0.8
     default-window-height { proportion 0.5; }
@@ -265,16 +247,16 @@ binds {
     Alt+Shift+J { move-workspace-down; }
     Alt+Shift+K   { move-workspace-up; }
 
-    Alt+Period { focus-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
-    Alt+Comma  { focus-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Period { focus-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Comma  { focus-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
     Alt+Tab    { focus-monitor "eDP-1"; }
 
-    Alt+Shift+Period { move-window-to-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
-    Alt+Shift+Comma  { move-window-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Shift+Period { move-window-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Shift+Comma  { move-window-to-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
     Alt+Shift+Tab    { move-window-to-monitor "eDP-1"; }
 
-    Alt+Ctrl+Period { move-workspace-to-monitor "Dell Inc. DELL U2412M YMYH147B060S"; }
-    Alt+Ctrl+Comma  { move-workspace-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Ctrl+Period { move-workspace-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
+    Alt+Ctrl+Comma  { move-workspace-to-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
     Alt+Ctrl+Tab    { move-workspace-to-monitor "eDP-1"; }
 
     Alt+U { move-column-to-monitor-next; }
@@ -333,6 +315,7 @@ binds {
     // B for borderless (nice to get rid of head of browser)
     Alt+B { toggle-windowed-fullscreen; }
     XF86Favorites { spawn "~/scripts/toggle-kbd.sh"; }
+    Alt+XF86Favorites { spawn "~/scripts/toggle-kbd.sh"; }
 
     // Center all fully visible columns on screen.
     Alt+Shift+C { center-column; }

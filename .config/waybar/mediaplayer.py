@@ -10,6 +10,7 @@ import signal
 import gi
 import json
 import os
+import subprocess
 from typing import List
 
 logger = logging.getLogger(__name__)
@@ -38,6 +39,8 @@ class PlayerManager:
         self.excluded_player = excluded_player.split(',') if excluded_player else []
 
         self.init_players()
+        self.show_most_important_player()
+        GLib.timeout_add_seconds(60, self.update_timew_fallback)
 
     def init_players(self):
         for player in self.manager.props.player_names:
@@ -74,9 +77,37 @@ class PlayerManager:
         sys.stdout.write(json.dumps(output) + "\n")
         sys.stdout.flush()
 
-    def clear_output(self):
-        sys.stdout.write("\n")
+    def write_timew_output(self):
+        try:
+            result = subprocess.run(
+                ["timew", "day", ":today", ":nocolor"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            tracked = next(
+                line.split()[1]
+                for line in result.stdout.splitlines()
+                if line.split()[:1] == ["Tracked"]
+            )
+        except Exception as e:
+            logger.debug(f"Unable to get timew total: {e}")
+            tracked = ""
+
+        output = {"text": tracked,
+                  "class": "custom-timew",
+                  "alt": "timew"}
+
+        sys.stdout.write(json.dumps(output) + "\n")
         sys.stdout.flush()
+
+    def update_timew_fallback(self):
+        if self.get_first_playing_player() is None:
+            self.write_timew_output()
+        return True
+
+    def clear_output(self):
+        self.write_timew_output()
 
     def on_playback_status_changed(self, player, status, _=None):
         logger.debug(f"Playback status changed for player {player.props.player_name}: {status}")
@@ -85,17 +116,13 @@ class PlayerManager:
     def get_first_playing_player(self):
         players = self.get_players()
         logger.debug(f"Getting first playing player from {len(players)} players")
-        if len(players) > 0:
-            # if any are playing, show the first one that is playing
-            # reverse order, so that the most recently added ones are preferred
-            for player in players[::-1]:
-                if player.props.status == "Playing":
-                    return player
-            # if none are playing, show the first one
-            return players[0]
-        else:
-            logger.debug("No players found")
-            return None
+        # if any are playing, show the first one that is playing
+        # reverse order, so that the most recently added ones are preferred
+        for player in players[::-1]:
+            if player.props.status == "Playing":
+                return player
+        logger.debug("No playing players found")
+        return None
 
     def show_most_important_player(self):
         logger.debug("Showing most important player")
@@ -129,9 +156,11 @@ class PlayerManager:
                 track_info = " " + track_info
             else:
                 track_info = " " + track_info
-        # only print output if no other player is playing
+        # only print media output for the currently playing player; otherwise show timew fallback
         current_playing = self.get_first_playing_player()
-        if current_playing is None or current_playing.props.player_name == player.props.player_name:
+        if current_playing is None:
+            self.write_timew_output()
+        elif current_playing.props.player_name == player.props.player_name:
             self.write_output(track_info, player)
         else:
             logger.debug(f"Other player {current_playing.props.player_name} is playing, skipping")

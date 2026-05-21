@@ -26,6 +26,9 @@ menu:
   - key: "e"
     desc: Emacs
     cmd: emacsclient -nca ""
+  - key: "t"
+    desc: Taskwarrior
+    cmd: alacritty -T "taskwarrior" -e taskwarrior-tui
   - key: "z"
     desc: Zathura (pdf)
     cmd: ~/scripts/open-zathura.sh

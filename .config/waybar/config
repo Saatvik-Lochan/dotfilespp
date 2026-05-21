@@ -1,6 +1,6 @@
 {
 	"layer": "top",
-  "output": "eDP-1",
+  "output": ["eDP-1", "DP-3"],
 	"position": "top", // top | bottom
 
 	"modules-left": [
@@ -43,8 +43,17 @@
   },
 
   "custom/spotify": {
-      "exec": "/usr/bin/python3 ~/.config/waybar/mediaplayer.py --player spotify",
-      "format": "{} ",
+      "exec": "/usr/bin/python3 ~/.config/waybar/mediaplayer.py",
+      "format": "{text} {icon}",
+      "format-icons": {
+        "spotify": "",
+        "firefox": "",
+        "chromium": "",
+        "mpv": "",
+        "vlc": "󰕼",
+        "timew": "󱎫",
+        "default": ""
+      },
       "return-type": "json",
       "on-click": "playerctl play-pause",
       "on-scroll-up": "playerctl next",

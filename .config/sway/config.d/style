@@ -17,4 +17,4 @@ smart_borders on
 
 bar swaybar_command waybar
 
-for_window [title="^fzfmenu$"] floating enable; resize set 1024 480
+for_window [title="^(fzfmenu|taskwarrior)$"] floating enable; resize set 1024 480

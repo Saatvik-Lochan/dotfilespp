@@ -1,0 +1,20 @@
+output "eDP-1" {
+    scale 1
+    transform "normal"
+    position x=1152 y=1728
+}
+
+output "Acer Technologies CB272U 0x3131AB9A" {
+    transform "90"
+    scale 1
+    position x=3072 y=0
+
+    layout {
+        default-column-width { proportion 1.0; }
+    }
+}
+
+output "Dell Inc. DELL P3225QE 1YVLB84" {
+    scale 1.25
+    position x=0 y=0
+}

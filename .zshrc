@@ -176,3 +176,6 @@ export PATH="/home/saatvikl/.local/bin:$PATH"
 
 # User-global npm installs (for pi and npm -g)
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+# Timewarrior: total tracked today
+alias today='timew day :today :nocolor | awk '\''$1 == "Tracked" {print $2}'\'''
