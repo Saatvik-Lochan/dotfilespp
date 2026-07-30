@@ -42,7 +42,12 @@ MapKey('<C-k>', ':cp<cr>', "Quick fix previous")
 MapKey('<leader>qo', ':copen<cr>', "Open quickfix list")
 MapKey('<leader>qt', ':cclose<cr>', "Close quickfix list")
 
+MapKey('<leader>rr', ':e %<cr>', "reload file")
+
 MapKey('<leader>x', ':e ~/.config/nvim/ideas.md<cr>', "Close quickfix list")
 
 require("general")
+require("latex")
+require("typst")
 require("config.lazy")
+

@@ -80,3 +80,5 @@
 	sms = submodule status
 	smf = submodule foreach
 	smup = submodule update --remote --merge
+[credential]
+	helper = cache

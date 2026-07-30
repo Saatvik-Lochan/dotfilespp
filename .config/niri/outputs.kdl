@@ -11,10 +11,13 @@ output "Acer Technologies CB272U 0x3131AB9A" {
 
     layout {
         default-column-width { proportion 1.0; }
+
+        struts {
+          top 600
+        }
     }
 }
 
 output "Dell Inc. DELL P3225QE 1YVLB84" {
-    scale 1.25
     position x=0 y=0
 }

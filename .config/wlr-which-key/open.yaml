@@ -28,7 +28,7 @@ menu:
     cmd: emacsclient -nca ""
   - key: "t"
     desc: Taskwarrior
-    cmd: alacritty -T "taskwarrior" -e taskwarrior-tui
+    cmd: kitty -o background_opacity=0.8 --title "taskwarrior" taskwarrior-tui
   - key: "z"
     desc: Zathura (pdf)
     cmd: ~/scripts/open-zathura.sh

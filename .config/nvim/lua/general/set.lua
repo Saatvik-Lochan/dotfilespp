@@ -18,6 +18,12 @@ set.backup = false
 set.undodir = os.getenv("HOME") .. "/.vim/undodir"
 set.undofile = true
 
+set.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+  command = "if mode() != 'c' | checktime | endif",
+  pattern = "*",
+})
+
 set.hlsearch = false
 set.incsearch = true
 set.smartcase = true

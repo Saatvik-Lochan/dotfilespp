@@ -1,0 +1,15 @@
+# ff-dl-dedup.service (systemd --user)
+# Watches your Downloads directory and de-dups Firefox "(1)" downloads.
+
+[Unit]
+Description=Firefox download de-dup/rename helper
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/scripts/ff-dl-dedup.sh %h/Downloads
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

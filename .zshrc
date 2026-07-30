@@ -179,3 +179,6 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 
 # Timewarrior: total tracked today
 alias today='timew day :today :nocolor | awk '\''$1 == "Tracked" {print $2}'\'''
+
+# Local OR-Tools install for blockbuster-imperative
+export ORTOOLS_ROOT="$HOME/.local/opt/ortools-9.15"

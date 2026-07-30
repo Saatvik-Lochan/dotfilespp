@@ -1,6 +1,6 @@
 return { -- potential speedup with fzf native
   'nvim-telescope/telescope.nvim',
-  tag = '0.1.8',
+  branch = 'master',
   dependencies = {
     'nvim-lua/plenary.nvim',
     'mollerhoj/telescope-recent-files.nvim',

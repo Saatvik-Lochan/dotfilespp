@@ -3,7 +3,10 @@ return {
   { 'kmonad/kmonad-vim', enabled = false },
   { 'https://github.com/calincru/flex-bison-syntax', enabled = false },
   {
-    "nvim-treesitter/nvim-treesitter", build = ":TSUpdate"
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main", -- required for Neovim 0.12+
+    lazy = false,
+    build = ":TSUpdate",
   },
   {
     "neovim/nvim-lspconfig",
