@@ -1,23 +1,16 @@
 output "eDP-1" {
-    scale 1
-    transform "normal"
-    position x=1152 y=1728
-}
-
-output "Acer Technologies CB272U 0x3131AB9A" {
-    transform "90"
-    scale 1
-    position x=3072 y=0
-
-    layout {
-        default-column-width { proportion 1.0; }
-
-        struts {
-          top 600
-        }
-    }
-}
-
-output "Dell Inc. DELL P3225QE 1YVLB84" {
     position x=0 y=0
+}
+
+output "Dell Inc. DELL P2725H JK64634" {
+    position x=0 y=-1080
+}
+
+binds {
+    Alt+Comma { focus-monitor "Dell Inc. DELL P2725H JK64634"; }
+    Alt+Ctrl+Comma { move-window-to-monitor "Dell Inc. DELL P2725H JK64634"; }
+    Alt+Shift+Comma { move-workspace-to-monitor "Dell Inc. DELL P2725H JK64634"; }
+    Alt+Tab { focus-monitor "eDP-1"; }
+    Alt+Ctrl+Tab { move-window-to-monitor "eDP-1"; }
+    Alt+Shift+Tab { move-workspace-to-monitor "eDP-1"; }
 }

@@ -132,7 +132,7 @@ include "outputs.kdl"
 include "colors.kdl"
 
 spawn-at-startup "zsh" "-c" "/home/saatvikl/scripts/init"
-spawn-at-startup "/home/saatvikl/.config/niri/niri-output-layout.sh" "--daemon"
+spawn-at-startup "/home/saatvikl/.config/niri/niri-output-layout.py" "--daemon"
 
 prefer-no-csd
 screenshot-path "~/screenshot/%Y-%m-%d_%H-%M-%S.png"
@@ -232,17 +232,6 @@ binds {
     Alt+Shift+J { move-workspace-down; }
     Alt+Shift+K   { move-workspace-up; }
 
-    Alt+Period { focus-monitor "Acer Technologies CB272U 0x3131AB9A"; }
-    Alt+Comma  { focus-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
-    Alt+Tab    { focus-monitor "eDP-1"; }
-
-    Alt+Ctrl+Period { move-window-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
-    Alt+Ctrl+Comma  { move-window-to-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
-    Alt+Ctrl+Tab    { move-window-to-monitor "eDP-1"; }
-
-    Alt+Shift+Period { move-workspace-to-monitor "Acer Technologies CB272U 0x3131AB9A"; }
-    Alt+Shift+Comma  { move-workspace-to-monitor "Dell Inc. DELL P3225QE 1YVLB84"; }
-    Alt+Shift+Tab    { move-workspace-to-monitor "eDP-1"; }
 
     Alt+U { move-column-to-monitor-next; }
     Alt+Shift+U { move-workspace-to-monitor-next; }
